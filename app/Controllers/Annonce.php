@@ -2,11 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Models\UtilisateurModel;
-use App\Models\PosteModel;
 use App\Models\BesoinModel;
-use App\Models\BudgetModel;
-use App\Models\RoleModel;
+
 use App\Models\AnnonceModel;
 
 use App\Models\StatutBesoinModel;
@@ -37,7 +34,7 @@ class Annonce extends BaseController
     {
         $idBesoin = $this->request->getPost('besoin');
         $desce = $this->request->getPost('desce');
-        
+
         $statutModel = new StatutBesoinModel();
         $besoinModel = new BesoinModel();
         $annonceModel = new AnnonceModel();
@@ -47,6 +44,12 @@ class Annonce extends BaseController
         $builder = $db->table('besoin');
         $builder->set('statut_id', $idCloture);
         $builder->update();
+
+        $builder = $db->table('historique_statut_besoin');
+        $builder->set('besoin_id', $idBesoin);
+        $builder->set('statut_besoin_id', $idCloture);
+        $builder->set('date_changement', date('Y-m-d H:i:s', time()));
+        $builder->insert();
         
         $nombre = $besoinModel->where('id', $idBesoin)->first()['nombre'];
 
