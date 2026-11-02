@@ -1,0 +1,732 @@
+ERROR - 2026-10-30 17:33:21 --> Error connecting to the database: mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#13 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#13 {main}
+CRITICAL - 2026-10-30 17:33:21 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user ''@'localhost' (using password: NO)
+[Method: GET, Route: utilisateurs]
+in SYSTEMPATH/Database/BaseConnection.php on line 606.
+ 1 SYSTEMPATH/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+ 5 APPPATH/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+ERROR - 2026-10-30 17:34:05 --> Error connecting to the database: mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#13 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#13 {main}
+CRITICAL - 2026-10-30 17:34:05 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user ''@'localhost' (using password: NO)
+[Method: GET, Route: utilisateurs]
+in SYSTEMPATH/Database/BaseConnection.php on line 606.
+ 1 SYSTEMPATH/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+ 5 APPPATH/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+ERROR - 2026-10-30 17:34:06 --> Error connecting to the database: mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#13 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#13 {main}
+CRITICAL - 2026-10-30 17:34:06 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user ''@'localhost' (using password: NO)
+[Method: GET, Route: utilisateurs]
+in SYSTEMPATH/Database/BaseConnection.php on line 606.
+ 1 SYSTEMPATH/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+ 5 APPPATH/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+ERROR - 2026-10-30 17:34:06 --> Error connecting to the database: mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#13 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#13 {main}
+CRITICAL - 2026-10-30 17:34:06 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user ''@'localhost' (using password: NO)
+[Method: GET, Route: utilisateurs]
+in SYSTEMPATH/Database/BaseConnection.php on line 606.
+ 1 SYSTEMPATH/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+ 5 APPPATH/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+ERROR - 2026-10-30 17:34:06 --> Error connecting to the database: mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#13 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#13 {main}
+CRITICAL - 2026-10-30 17:34:06 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user ''@'localhost' (using password: NO)
+[Method: GET, Route: utilisateurs]
+in SYSTEMPATH/Database/BaseConnection.php on line 606.
+ 1 SYSTEMPATH/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+ 5 APPPATH/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+ERROR - 2026-10-30 17:34:07 --> Error connecting to the database: mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#13 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#13 {main}
+CRITICAL - 2026-10-30 17:34:07 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user ''@'localhost' (using password: NO)
+[Method: GET, Route: utilisateurs]
+in SYSTEMPATH/Database/BaseConnection.php on line 606.
+ 1 SYSTEMPATH/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+ 5 APPPATH/Controllers/Utilisateur.php(11): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+ERROR - 2026-10-30 17:35:32 --> Error connecting to the database: mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(12): CodeIgniter\BaseModel->findAll()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#13 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(12): CodeIgniter\BaseModel->findAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#13 {main}
+CRITICAL - 2026-10-30 17:35:32 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user ''@'localhost' (using password: NO)
+[Method: GET, Route: utilisateurs]
+in SYSTEMPATH/Database/BaseConnection.php on line 606.
+ 1 SYSTEMPATH/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+ 5 APPPATH/Controllers/Utilisateur.php(12): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+ERROR - 2026-10-30 17:35:33 --> Error connecting to the database: mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(12): CodeIgniter\BaseModel->findAll()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#13 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(12): CodeIgniter\BaseModel->findAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#13 {main}
+CRITICAL - 2026-10-30 17:35:33 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user ''@'localhost' (using password: NO)
+[Method: GET, Route: utilisateurs]
+in SYSTEMPATH/Database/BaseConnection.php on line 606.
+ 1 SYSTEMPATH/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+ 5 APPPATH/Controllers/Utilisateur.php(12): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+ERROR - 2026-10-30 17:35:33 --> Error connecting to the database: mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(12): CodeIgniter\BaseModel->findAll()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#13 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(12): CodeIgniter\BaseModel->findAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#13 {main}
+CRITICAL - 2026-10-30 17:35:33 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user ''@'localhost' (using password: NO)
+[Method: GET, Route: utilisateurs]
+in SYSTEMPATH/Database/BaseConnection.php on line 606.
+ 1 SYSTEMPATH/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+ 5 APPPATH/Controllers/Utilisateur.php(12): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+ERROR - 2026-10-30 17:35:33 --> Error connecting to the database: mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(12): CodeIgniter\BaseModel->findAll()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#13 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(12): CodeIgniter\BaseModel->findAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#13 {main}
+CRITICAL - 2026-10-30 17:35:33 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user ''@'localhost' (using password: NO)
+[Method: GET, Route: utilisateurs]
+in SYSTEMPATH/Database/BaseConnection.php on line 606.
+ 1 SYSTEMPATH/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+ 5 APPPATH/Controllers/Utilisateur.php(12): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+ERROR - 2026-10-30 17:35:34 --> Error connecting to the database: mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(12): CodeIgniter\BaseModel->findAll()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#13 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user ''@'localhost' (using password: NO) in /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/user/Documents/S5/PROJET GESTION RH/RH/system/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+#5 /home/user/Documents/S5/PROJET GESTION RH/RH/app/Controllers/Utilisateur.php(12): CodeIgniter\BaseModel->findAll()
+#6 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+#7 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#8 /home/user/Documents/S5/PROJET GESTION RH/RH/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#10 /home/user/Documents/S5/PROJET GESTION RH/RH/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#12 /home/user/Documents/S5/PROJET GESTION RH/RH/system/rewrite.php(44): require_once('...')
+#13 {main}
+CRITICAL - 2026-10-30 17:35:34 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user ''@'localhost' (using password: NO)
+[Method: GET, Route: utilisateurs]
+in SYSTEMPATH/Database/BaseConnection.php on line 606.
+ 1 SYSTEMPATH/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(253): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll()
+ 5 APPPATH/Controllers/Utilisateur.php(12): CodeIgniter\BaseModel->findAll()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+CRITICAL - 2026-10-30 17:36:16 --> Error: Undefined constant "utilisateurs"
+[Method: GET, Route: utilisateurs]
+in APPPATH/Views/users.php on line 4.
+ 1 SYSTEMPATH/View/View.php(240): include()
+ 2 SYSTEMPATH/View/View.php(243): CodeIgniter\View\View->{closure:CodeIgniter\View\View::render():237}()
+ 3 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 4 APPPATH/Controllers/Utilisateur.php(14): view()
+ 5 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+ 6 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 7 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 8 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+10 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+11 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+CRITICAL - 2026-10-30 17:40:36 --> ErrorException: Array to string conversion
+[Method: GET, Route: utilisateurs]
+in APPPATH/Views/users.php on line 4.
+ 1 APPPATH/Views/users.php(4): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(240): include('/home/user/Documents/S5/PROJET GESTION RH/RH/app/Views/users.php')
+ 3 SYSTEMPATH/View/View.php(243): CodeIgniter\View\View->{closure:CodeIgniter\View\View::render():237}()
+ 4 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/Utilisateur.php(14): view()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+CRITICAL - 2026-10-30 17:41:42 --> ErrorException: Attempt to read property "nom" on array
+[Method: GET, Route: utilisateurs]
+in APPPATH/Views/users.php on line 4.
+ 1 APPPATH/Views/users.php(4): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(240): include('/home/user/Documents/S5/PROJET GESTION RH/RH/app/Views/users.php')
+ 3 SYSTEMPATH/View/View.php(243): CodeIgniter\View\View->{closure:CodeIgniter\View\View::render():237}()
+ 4 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/Utilisateur.php(14): view()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Utilisateur->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+CRITICAL - 2026-10-30 22:02:45 --> Error: Class "App\Models\UtilisateurModel" not found
+[Method: POST, Route: login]
+in APPPATH/Controllers/Auth/Auth.php on line 16.
+ 1 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Auth\Auth->login()
+ 2 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 3 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 4 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+ 6 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+ 7 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+CRITICAL - 2026-10-30 22:03:25 --> Error: Class "App\Models\Utilisateur\UtilisateurModel" not found
+[Method: POST, Route: login]
+in APPPATH/Controllers/Auth/Auth.php on line 16.
+ 1 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Auth\Auth->login()
+ 2 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 3 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 4 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+ 6 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+ 7 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+CRITICAL - 2026-10-30 22:03:27 --> Error: Class "App\Models\Utilisateur\UtilisateurModel" not found
+[Method: POST, Route: login]
+in APPPATH/Controllers/Auth/Auth.php on line 16.
+ 1 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Auth\Auth->login()
+ 2 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 3 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 4 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+ 6 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+ 7 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+CRITICAL - 2026-10-30 22:03:43 --> ErrorException: Trying to access array offset on null
+[Method: POST, Route: login]
+in APPPATH/Controllers/Auth/Auth.php on line 23.
+ 1 APPPATH/Controllers/Auth/Auth.php(23): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Auth\Auth->login()
+ 3 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 4 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 5 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+ 7 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+CRITICAL - 2026-10-30 22:04:02 --> ErrorException: Trying to access array offset on null
+[Method: POST, Route: login]
+in APPPATH/Controllers/Auth/Auth.php on line 23.
+ 1 APPPATH/Controllers/Auth/Auth.php(23): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Auth\Auth->login()
+ 3 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 4 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 5 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+ 7 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+CRITICAL - 2026-10-30 22:04:33 --> ErrorException: Trying to access array offset on null
+[Method: POST, Route: login]
+in APPPATH/Controllers/Auth/Auth.php on line 23.
+ 1 APPPATH/Controllers/Auth/Auth.php(23): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Auth\Auth->login()
+ 3 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 4 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 5 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+ 7 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+CRITICAL - 2026-10-30 22:05:19 --> ErrorException: Attempt to read property "mdp" on null
+[Method: POST, Route: login]
+in APPPATH/Controllers/Auth/Auth.php on line 23.
+ 1 APPPATH/Controllers/Auth/Auth.php(23): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Auth\Auth->login()
+ 3 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 4 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 5 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+ 7 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+CRITICAL - 2026-10-30 22:05:59 --> ErrorException: Attempt to read property "mdp" on null
+[Method: POST, Route: login]
+in APPPATH/Controllers/Auth/Auth.php on line 24.
+ 1 APPPATH/Controllers/Auth/Auth.php(24): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Auth\Auth->login()
+ 3 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 4 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 5 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+ 7 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+CRITICAL - 2026-10-30 22:06:16 --> ParseError: Unmatched '}'
+[Method: POST, Route: login]
+in APPPATH/Controllers/Auth/Auth.php on line 41.
+ 1 SYSTEMPATH/Autoloader/Autoloader.php(295): CodeIgniter\Autoloader\Autoloader->includeFile()
+ 2 SYSTEMPATH/Autoloader/Autoloader.php(271): CodeIgniter\Autoloader\Autoloader->loadInNamespace()
+ 3 [internal function]: CodeIgniter\Autoloader\Autoloader->loadClass()
+ 4 SYSTEMPATH/Router/Router.php(792): class_exists()
+ 5 SYSTEMPATH/Router/Router.php(230): CodeIgniter\Router\Router->processRouteAttributes()
+ 6 SYSTEMPATH/CodeIgniter.php(829): CodeIgniter\Router\Router->handle()
+ 7 SYSTEMPATH/CodeIgniter.php(441): CodeIgniter\CodeIgniter->tryToRouteIt()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+DEBUG - 2026-10-30 22:12:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-10-30 22:18:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-10-30 22:18:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-10-30 22:20:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-10-30 22:24:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-10-30 22:24:37 --> ErrorException: Trying to access array offset on null
+[Method: POST, Route: login]
+in APPPATH/Controllers/Auth/Auth.php on line 24.
+ 1 APPPATH/Controllers/Auth/Auth.php(24): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Auth\Auth->login()
+ 3 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 4 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 5 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+ 7 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+CRITICAL - 2026-10-30 22:24:54 --> ErrorException: Trying to access array offset on null
+[Method: POST, Route: login]
+in APPPATH/Controllers/Auth/Auth.php on line 24.
+ 1 APPPATH/Controllers/Auth/Auth.php(24): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Auth\Auth->login()
+ 3 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 4 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 5 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+ 7 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+CRITICAL - 2026-10-30 22:25:11 --> ErrorException: Trying to access array offset on null
+[Method: POST, Route: login]
+in APPPATH/Controllers/Auth/Auth.php on line 25.
+ 1 APPPATH/Controllers/Auth/Auth.php(25): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Auth\Auth->login()
+ 3 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 4 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 5 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+ 7 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
