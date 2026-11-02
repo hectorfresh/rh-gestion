@@ -7,6 +7,7 @@ INSERT INTO utilisateur(nom, email, mdp, role_id) VALUES('rh', 'rh@mail.com', '1
 INSERT INTO utilisateur(nom, email, mdp, role_id) VALUES('manager', 'manager@mail.com', '1234', 3);
 
 INSERT INTO statut_besoin(libelle) VALUES('Créé');
+INSERT INTO statut_besoin(libelle) VALUES('Cloturé');
 INSERT INTO statut_besoin(libelle) VALUES('Validé Par RH');
 INSERT INTO statut_besoin(libelle) VALUES('Refusé Par RH');
 INSERT INTO statut_besoin(libelle) VALUES('Validé Par DG');

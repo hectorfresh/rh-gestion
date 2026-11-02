@@ -40,6 +40,16 @@ CREATE TABLE besoin(
 );
 
 
+CREATE TABLE annonce(
+    id INT PRIMARY KEY AUTO_INCREMENT, 
+    besoin_id INT, 
+    date_creation DATETIME, 
+    desce TEXT, 
+    estCloture INT,
+    FOREIGN KEY (besoin_id) REFERENCES besoin(id)
+);
+
+
 CREATE TABLE historique_statut_besoin(
     id INT PRIMARY KEY AUTO_INCREMENT, 
     besoin_id INT, 

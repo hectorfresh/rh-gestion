@@ -205,10 +205,6 @@ class Besoin extends BaseController
     }
 
 
-
-
-
-
     public function refuser($id)
     {
         $db = \Config\Database::connect();
@@ -227,5 +223,9 @@ class Besoin extends BaseController
         return "Besoin Refusé";
 
     }
+
+
+
+
 
 }
