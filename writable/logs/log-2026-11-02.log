@@ -854,3 +854,137 @@ in SYSTEMPATH/Database/MySQLi/Connection.php on line 300.
 13 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
 14 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
 15 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+DEBUG - 2026-11-02 19:47:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-11-02 19:47:05 --> ErrorException: Trying to access array offset on null
+[Method: GET, Route: /]
+in APPPATH/Views/test.php on line 11.
+ 1 APPPATH/Views/test.php(11): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(240): include('/home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/app/Views/test.php')
+ 3 SYSTEMPATH/View/View.php(243): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/Test.php(12): view()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Test->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/public/index.php')
+DEBUG - 2026-11-02 19:58:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-11-02 19:58:26 --> ErrorException: Trying to access array offset on null
+[Method: GET, Route: /]
+in APPPATH/Views/test.php on line 11.
+ 1 APPPATH/Views/test.php(11): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(240): include('/home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/app/Views/test.php')
+ 3 SYSTEMPATH/View/View.php(243): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/Test.php(12): view()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Test->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/public/index.php')
+DEBUG - 2026-11-02 19:58:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-11-02 19:58:27 --> ErrorException: Trying to access array offset on null
+[Method: GET, Route: /]
+in APPPATH/Views/test.php on line 11.
+ 1 APPPATH/Views/test.php(11): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(240): include('/home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/app/Views/test.php')
+ 3 SYSTEMPATH/View/View.php(243): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/Test.php(12): view()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Test->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/public/index.php')
+DEBUG - 2026-11-02 19:58:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-11-02 19:58:30 --> ErrorException: Trying to access array offset on null
+[Method: GET, Route: /]
+in APPPATH/Views/test.php on line 11.
+ 1 APPPATH/Views/test.php(11): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(240): include('/home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/app/Views/test.php')
+ 3 SYSTEMPATH/View/View.php(243): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/Test.php(12): view()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Test->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/public/index.php')
+DEBUG - 2026-11-02 19:58:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-11-02 19:58:31 --> ErrorException: Trying to access array offset on null
+[Method: GET, Route: /]
+in APPPATH/Views/test.php on line 11.
+ 1 APPPATH/Views/test.php(11): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(240): include('/home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/app/Views/test.php')
+ 3 SYSTEMPATH/View/View.php(243): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/Test.php(12): view()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Test->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/public/index.php')
+ERROR - 2026-11-02 20:02:02 --> Error connecting to the database: mysqli_sql_exception: No such file or directory in /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/Database/MySQLi/Connection.php:201
+Stack trace:
+#0 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/Database/MySQLi/Connection.php(201): mysqli->real_connect()
+#1 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#2 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#3 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#4 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/Model.php(295): CodeIgniter\Database\BaseBuilder->get()
+#5 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/BaseModel.php(714): CodeIgniter\Model->doFirst()
+#6 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/app/Controllers/Auth.php(22): CodeIgniter\BaseModel->first()
+#7 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/CodeIgniter.php(951): App\Controllers\Auth->login()
+#8 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#9 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#10 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#11 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#12 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#13 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/rewrite.php(44): require_once('...')
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: No such file or directory in /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/Database/BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect()
+#1 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#2 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+#3 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/Model.php(295): CodeIgniter\Database\BaseBuilder->get()
+#4 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/BaseModel.php(714): CodeIgniter\Model->doFirst()
+#5 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/app/Controllers/Auth.php(22): CodeIgniter\BaseModel->first()
+#6 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/CodeIgniter.php(951): App\Controllers\Auth->login()
+#7 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+#8 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+#9 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/Boot.php(417): CodeIgniter\CodeIgniter->run()
+#10 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+#11 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/public/index.php(59): CodeIgniter\Boot::bootWeb()
+#12 /home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/system/rewrite.php(44): require_once('...')
+#13 {main}
+CRITICAL - 2026-11-02 20:02:02 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: No such file or directory
+[Method: POST, Route: login]
+in SYSTEMPATH/Database/BaseConnection.php on line 606.
+ 1 SYSTEMPATH/Database/BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query()
+ 3 SYSTEMPATH/Model.php(295): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(714): CodeIgniter\Model->doFirst()
+ 5 APPPATH/Controllers/Auth.php(22): CodeIgniter\BaseModel->first()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Auth->login()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/public/index.php')
+DEBUG - 2026-11-02 20:03:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-11-02 20:03:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-11-02 20:04:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-11-02 20:05:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
