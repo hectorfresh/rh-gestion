@@ -1,3 +1,14 @@
+<?php 
+
+use App\Models\RoleModel;
+
+$dg = new RoleModel()->where('libelle', 'dg')->first()['id'];
+$rh = new RoleModel()->where('libelle', 'rh')->first()['id'];
+$manager = new RoleModel()->where('libelle', 'manager')->first()['id'];
+
+$user = session()->get('user')['role_id'];?>
+
+
 <nav class="navbar navbar-default app-navbar">
     <div class="container">
         <div class="navbar-header">
@@ -27,21 +38,30 @@
                 </li>
 
 
-                <li class="<?= $active === 'creer' ? 'active' : '' ?>">
-                    <a href="<?= base_url('besoins') ?>">
-                        <i class="fa fa-plus-circle"></i> Créer un besoin
-                    </a>
-                </li>
-                <li class="<?= $active === 'valider' ? 'active' : '' ?>">
-                    <a href="<?= base_url('besoins/valider') ?>">
-                        <i class="fa fa-check-circle"></i> Valider
-                    </a>
-                </li>
-                <li class="<?= $active === 'annonces' ? 'active' : '' ?>">
-                    <a href="<?= base_url('annonces') ?>">
-                        <i class="fa fa-bullhorn"></i> Annonces
-                    </a>
-                </li>
+                <?php if ($user==$dg || $user==$manager) {?>
+                        <li class="<?= $active === 'creer' ? 'active' : '' ?>">
+                            <a href="<?= base_url('besoins') ?>">
+                                <i class="fa fa-plus-circle"></i> Créer un besoin
+                            </a>
+                        </li>
+
+                <?php } ?>
+
+                <?php if ($user==$dg || $user==$rh) { ?>
+
+                        <li class="<?= $active === 'valider' ? 'active' : '' ?>">
+                            <a href="<?= base_url('besoins/valider') ?>">
+                                <i class="fa fa-check-circle"></i> Valider
+                            </a>
+                        </li>
+  
+                    <li class="<?= $active === 'annonces' ? 'active' : '' ?>">
+                        <a href="<?= base_url('annonces') ?>">
+                            <i class="fa fa-bullhorn"></i> Annonces
+                        </a>
+                    </li>
+
+            <?php } ?>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">

@@ -157,11 +157,7 @@
                 </div>
             </div>
 
-            <div class="text-right">
-                <a href="<?= base_url('besoins/creer') ?>" class="btn btn-warning">
-                    <i class="fa fa-plus"></i> Créer un besoin
-                </a>
-            </div>
+
         </div>
     </div>
 </body>

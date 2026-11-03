@@ -1,3 +1,16 @@
+<?php 
+
+use App\Models\RoleModel;
+
+$dg = new RoleModel()->where('libelle', 'dg')->first()['id'];
+$rh = new RoleModel()->where('libelle', 'rh')->first()['id'];
+$manager = new RoleModel()->where('libelle', 'manager')->first()['id'];
+
+$user = session()->get('user')['role_id'];?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -24,6 +37,9 @@
             </p>
 
             <div class="row app-nav-row">
+
+            <?php if ($user==$dg || $user==$manager) { ?>
+
                 <div class="col-md-4 col-sm-4">
                     <a href="<?= base_url('besoins') ?>" class="app-nav-card">
                         <div class="app-nav-icon orange">
@@ -33,6 +49,9 @@
                         <p>Enregistrer une nouvelle demande de recrutement.</p>
                     </a>
                 </div>
+            <?php } ?>
+
+             <?php if ($user==$dg || $user==$rh) { ?>
 
                 <div class="col-md-4 col-sm-4">
                     <a href="<?= base_url('besoins/valider') ?>" class="app-nav-card">
@@ -43,7 +62,7 @@
                         <p>Consulter et valider les besoins en attente.</p>
                     </a>
                 </div>
-
+       
                 <div class="col-md-4 col-sm-4">
                     <a href="<?= base_url('annonces') ?>" class="app-nav-card">
                         <div class="app-nav-icon blue">
@@ -53,6 +72,7 @@
                         <p>Générer une annonce à partir d'un besoin validé.</p>
                     </a>
                 </div>
+            <?php } ?>
             </div>
         </div>
     </div>
