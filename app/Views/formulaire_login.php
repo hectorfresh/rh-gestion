@@ -11,7 +11,6 @@
     <link href="<?= base_url('assets/css/bootstrap-theme.min.css') ?>" rel="stylesheet" type="text/css">
     <link href="<?= base_url('assets/css/templatemo_style.css') ?>" rel="stylesheet" type="text/css">
     <link href="<?= base_url('assets/css/app.css') ?>" rel="stylesheet" type="text/css">
-    <link href="<?= base_url('assets/css/app.css') ?>" rel="stylesheet" type="text/css">
 
     <style>
         .page-subtitle {
@@ -69,36 +68,13 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 0; margin-top: 30px;">
                     <div class="col-md-12">
-                        <div class="control-wrapper">
-                            <input type="submit" value="Connexion" class="btn btn-info">
-                            <a href="#" class="text-right pull-right">Forgot password?</a>
-                        </div>
+                        <input type="submit" value="Connexion" class="btn btn-info btn-block" style="margin-bottom: 15px;">
                     </div>
                 </div>
 
-                <hr>
-
-                <div class="form-group">
-                    <div class="col-md-12">
-                        <label>Login with: </label>
-                        <div class="inline-block">
-                            <a href="#"><i class="fa fa-facebook-square login-with"></i></a>
-                            <a href="#"><i class="fa fa-twitter-square login-with"></i></a>
-                            <a href="#"><i class="fa fa-google-plus-square login-with"></i></a>
-                            <a href="#"><i class="fa fa-tumblr-square login-with"></i></a>
-                            <a href="#"><i class="fa fa-github-square login-with"></i></a>
-                        </div>
-                    </div>
-                </div>
             </form>
-
-            <div class="text-center">
-                <a href="#" class="templatemo-create-new">
-                    Create new account <i class="fa fa-arrow-circle-o-right"></i>
-                </a>
-            </div>
         </div>
     </div>
 </body>
