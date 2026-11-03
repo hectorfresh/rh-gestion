@@ -3,6 +3,7 @@
 use App\Models\RoleModel;
 
 $roleModel = new RoleModel();
+
 $dg = $roleModel->where('libelle', 'dg')->first()['id'];
 $rh = $roleModel->where('libelle', 'rh')->first()['id'];
 $manager = $roleModel->where('libelle', 'manager')->first()['id'];

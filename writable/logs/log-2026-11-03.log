@@ -936,3 +936,20 @@ in APPPATH/Views/dashboard.php on line 5.
  8 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
  9 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
 10 SYSTEMPATH/rewrite.php(44): require_once('/home/fandresena-loic/s5/projet/php/code igniter/rh-gestion/public/index.php')
+CRITICAL - 2026-11-03 17:59:15 --> ErrorException: Undefined variable $roleModel
+[Method: GET, Route: /]
+in APPPATH/Views/dashboard.php on line 5.
+ 1 APPPATH/Views/dashboard.php(5): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(240): include('/home/user/Documents/S5/PROJET GESTION RH/RH/app/Views/dashboard.php')
+ 3 SYSTEMPATH/View/View.php(243): CodeIgniter\View\View->{closure:CodeIgniter\View\View::render():237}()
+ 4 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 5 APPPATH/Controllers/Dashboard.php(9): view()
+ 6 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\Dashboard->index()
+ 7 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 8 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 9 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+12 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Documents/S5/PROJET GESTION RH/RH/public/index.php')
+DEBUG - 2026-11-03 17:59:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-11-03 17:59:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
