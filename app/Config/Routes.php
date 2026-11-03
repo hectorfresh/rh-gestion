@@ -12,8 +12,8 @@ use App\Filters\RoleFilter;
  */
 
 $routes->get('/utilisateurs', 'Utilisateur::index');
-$routes->get('/', [Test::class, 'index']);
-
+//$routes->get('/', [Test::class, 'index']);
+$routes->get('/', 'Dashboard::index');
 
 $routes->get('/login', [Auth::class, 'index']);
 $routes->post('/login', [Auth::class, 'login']);
