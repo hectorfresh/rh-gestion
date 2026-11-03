@@ -65,6 +65,21 @@ class Annonce extends BaseController
         return "Annonce Créée";
     }
 
-    
+
+    public function liste()
+    {
+        $db = \Config\Database::connect();
+        $builder = $db->table('annonce');
+        $builder->select('*');
+        $builder->join('besoin', 'besoin.id=annonce.besoin_id');
+        $builder->join('poste', 'besoin.poste_id=poste.id');
+        $builder->where('estCloture', 0);
+
+        $data['annonces'] = $builder->get()->getResult();
+
+
+
+        return view('annonces', $data);
+    }
 
 }

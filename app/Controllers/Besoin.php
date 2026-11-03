@@ -106,7 +106,8 @@ class Besoin extends BaseController
         if ($onlineUserRole==$dg) {
             $statut = $statutModel->findAll();
             $idValideDg = $statutModel->where('libelle', 'Validé Par DG')->first()['id'];
-            $query = $db->query("SELECT * FROM besoin b JOIN poste ON poste.id = b.poste_id AND b.statut_id != " . $idValideDg);
+            $idCloture = $statutModel->where('libelle', 'Cloturé')->first()['id'];
+            $query = $db->query("SELECT * FROM besoin b JOIN poste ON poste.id = b.poste_id WHERE b.statut_id !=" . $idValideDg . " AND b.statut_id != " . $idCloture);
             $result = $query->getResultArray();
             $data['besoins'] = $result;
             return view("validation_besoin", $data);

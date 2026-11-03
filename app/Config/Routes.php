@@ -30,6 +30,7 @@ $routes->get('/besoins/(:num)/', 'Besoin::fiche/$1');
     $routes->get('/besoins/refuser/(:num)', 'Besoin::refuser/$1');
 
 $routes->get('/annonces', 'Annonce::genererForm');
+$routes->get('/annonces/liste', 'Annonce::liste');
 $routes->post('/annonces/creer', 'Annonce::generer');
 
 

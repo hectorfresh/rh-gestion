@@ -130,7 +130,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($besoins as $b) {?>
+                            <?php  foreach ($besoins as $b) {?>
                                 <tr>
                                     <td>
                                         <a href="/besoins/<?php echo $b['id'];?>/" style="text-decoration: none;">
