@@ -2,9 +2,10 @@
 
 use App\Models\RoleModel;
 
-$dg = new RoleModel()->where('libelle', 'dg')->first()['id'];
-$rh = new RoleModel()->where('libelle', 'rh')->first()['id'];
-$manager = new RoleModel()->where('libelle', 'manager')->first()['id'];
+$roleModel = new RoleModel();
+$dg = $roleModel->where('libelle', 'dg')->first()['id'];
+$rh = $roleModel->where('libelle', 'rh')->first()['id'];
+$manager = $roleModel->where('libelle', 'manager')->first()['id'];
 
 $user = session()->get('user')['role_id'];?>
 
