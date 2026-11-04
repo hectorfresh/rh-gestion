@@ -37,12 +37,13 @@ $user = $sessionUser['role_id'] ?? null;
             <ul class="nav navbar-nav">
 
 
-
+            <?php if ($user !== null ) { ?>
                 <li class="<?= $active === 'accueil' ? 'active' : '' ?>">
                     <a href="<?= base_url('/accueil') ?>">
                         <i class="fa fa-home"></i> Accueil
                     </a>
                 </li>
+                <?php } ?>
 
 
                 <?php if ($user==$dg || $user==$manager) {?>
@@ -70,9 +71,7 @@ $user = $sessionUser['role_id'] ?? null;
 
             <?php } ?>
 
-            <?php if ($user==null) { ?>
-    
-            <?php } ?>
+            
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
@@ -101,7 +100,7 @@ $user = $sessionUser['role_id'] ?? null;
         </li>
 
     <?php } ?>
-
+    
 </ul>
 
         </div>

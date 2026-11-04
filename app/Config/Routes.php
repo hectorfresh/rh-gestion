@@ -40,7 +40,8 @@ $routes->get('/besoins/(:num)/', 'Besoin::fiche/$1');
 $routes->get('/annonces', 'Annonce::genererForm');
 // $routes->get('/annonces/liste', 'Annonce::liste');
 $routes->post('/annonces/creer', 'Annonce::generer');
-$routes->post('/postule/formulaire', 'Annonce::generer');
+$routes->get('/postule/(:num)', 'candidature::form');
+
 
 
 

@@ -6,8 +6,14 @@ use App\Controllers\BaseController;
 
 class Candidature extends BaseController
 {
-    public function form() : string {
-        return view('candidature');        
+    public function form() {
+        if(session()->get('user')==null){
+            return redirect()->to('/login');
+        }
+        else{
+            return view('postule_cv');
+        }
+              
     }
     
    
