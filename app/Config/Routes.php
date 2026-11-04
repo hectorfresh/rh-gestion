@@ -13,11 +13,19 @@ use App\Filters\RoleFilter;
 
 $routes->get('/utilisateurs', 'Utilisateur::index');
 //$routes->get('/', [Test::class, 'index']);
-$routes->get('/', 'Dashboard::index');
+$routes->get('/accueil', 'Dashboard::index');
+
+$routes->get('/', 'Annonce::liste');
+
 
 $routes->get('/login', [Auth::class, 'index']);
 $routes->post('/login', [Auth::class, 'login']);
 $routes->get('/logout', [Auth::class, 'logout']);
+$routes->get('/create_compte', [Auth::class, 'creerCompteForm']);
+$routes->post('/create_account', [Auth::class, 'insertUtilisateur']);
+
+
+
 
 $routes->get('/besoins', [Besoin::class, 'form']);
 $routes->post('/besoins/creer', [Besoin::class, 'insert']);
@@ -30,7 +38,7 @@ $routes->get('/besoins/(:num)/', 'Besoin::fiche/$1');
     $routes->get('/besoins/refuser/(:num)', 'Besoin::refuser/$1');
 
 $routes->get('/annonces', 'Annonce::genererForm');
-$routes->get('/annonces/liste', 'Annonce::liste');
+// $routes->get('/annonces/liste', 'Annonce::liste');
 $routes->post('/annonces/creer', 'Annonce::generer');
 
 

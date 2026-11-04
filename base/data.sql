@@ -1,6 +1,7 @@
 INSERT INTO role(libelle) VALUES('dg');
 INSERT INTO role(libelle) VALUES('rh');
 INSERT INTO role(libelle) VALUES('manager');
+INSERT INTO role(libelle) VALUES('candidat');
 
 INSERT INTO utilisateur(nom, email, mdp, role_id) VALUES('dg', 'dg@mail.com', '1234', 1);
 INSERT INTO utilisateur(nom, email, mdp, role_id) VALUES('rh', 'rh@mail.com', '1234', 2);

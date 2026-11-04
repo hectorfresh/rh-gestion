@@ -75,6 +75,9 @@
                 </div>
 
             </form>
+             <div class="text-center">
+		      	<a href="<?= base_url('/create_compte') ?>" class="templatemo-create-new">Create new account <i class="fa fa-arrow-circle-o-right"></i></a>	
+		      </div>
         </div>
     </div>
 </body>
