@@ -109,7 +109,7 @@
                             </div>
                             
                             <div class="annonce-footer">
-                                <a href="" class="btn btn-warning btn-block">
+                                <a href="/postule/<?= esc($a->id) ?>" class="btn btn-warning btn-block">
                                     <i class="fa fa-paper-plane"></i> Postuler
                                 </a>
                             </div>

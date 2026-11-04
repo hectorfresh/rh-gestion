@@ -66,3 +66,31 @@ CREATE TABLE budget(
     id INT PRIMARY KEY AUTO_INCREMENT, 
     valeur DECIMAL(14,2)
 );
+
+CREATE TABLE candidature(
+    id INT PRIMARY KEY AUTO_INCREMENT, 
+    annonce_id INT, 
+    utilisateur_id INT, 
+    date_candidature DATETIME, 
+    FOREIGN KEY (annonce_id) REFERENCES annonce(id),
+    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id)
+);
+
+CREATE TABLE cv(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    utilisateur_id INT,
+    dilplome_id INT,
+    experience_id INT,
+    FOREIGN KEY (experience_id) REFERENCES experience(id),
+    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id),
+    FOREIGN KEY (dilplome_id) REFERENCES diplome(id)
+);
+
+CREATE TABLE experience(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    descri TEXT,
+    etablissement VARCHAR(50),  /*ou entreprise*/
+    DATE date_debut,
+    DATE date_fin
+    
+);
