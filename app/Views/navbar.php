@@ -69,6 +69,14 @@ $user = $sessionUser['role_id'] ?? null;
                         </a>
                     </li>
 
+
+
+                    <li class="<?= $active === 'candidatures' ? 'active' : '' ?>">
+                        <a href="<?= base_url('candidatures/liste') ?>">
+                            <i class="fa fa-bullhorn"></i> Liste candidature
+                        </a>
+                    </li>
+
             <?php } ?>
 
             

@@ -67,30 +67,106 @@ CREATE TABLE budget(
     valeur DECIMAL(14,2)
 );
 
-CREATE TABLE candidature(
-    id INT PRIMARY KEY AUTO_INCREMENT, 
-    annonce_id INT, 
-    utilisateur_id INT, 
-    date_candidature DATETIME, 
-    FOREIGN KEY (annonce_id) REFERENCES annonce(id),
-    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id)
-);
+-- CREATE TABLE candidature(
+--     id INT PRIMARY KEY AUTO_INCREMENT, 
+--     annonce_id INT, 
+--     utilisateur_id INT, 
+--     date_candidature DATETIME, 
+--     FOREIGN KEY (annonce_id) REFERENCES annonce(id),
+--     FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id)
+-- );
+
+-- CREATE TABLE cv(
+--     id INT PRIMARY KEY AUTO_INCREMENT,
+--     utilisateur_id INT,
+--     dilplome_id INT,
+--     experience_id INT,
+--     FOREIGN KEY (experience_id) REFERENCES experience(id),
+--     FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id),
+--     FOREIGN KEY (dilplome_id) REFERENCES diplome(id)
+-- );
+
+-- CREATE TABLE experience(
+--     id INT PRIMARY KEY AUTO_INCREMENT,
+--     descri TEXT,
+--     etablissement VARCHAR(50),  /*ou entreprise*/
+--     DATE date_debut,
+--     DATE date_fin
+    
+-- );
 
 CREATE TABLE cv(
     id INT PRIMARY KEY AUTO_INCREMENT,
     utilisateur_id INT,
-    dilplome_id INT,
-    experience_id INT,
-    FOREIGN KEY (experience_id) REFERENCES experience(id),
-    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id),
-    FOREIGN KEY (dilplome_id) REFERENCES diplome(id)
+    titre VARCHAR(50),
+    descri TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id)
 );
 
-CREATE TABLE experience(
+
+
+CREATE TABLE cv_identite(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    descri TEXT,
-    etablissement VARCHAR(50),  /*ou entreprise*/
-    DATE date_debut,
-    DATE date_fin
-    
+    cv_id INT,
+    nom VARCHAR(50),
+    telephone VARCHAR(20),
+    adresse VARCHAR(100),
+    ville VARCHAR(50),
+    email VARCHAR(50),
+    FOREIGN KEY (cv_id) REFERENCES cv(id)
 );
+
+CREATE TABLE cv_formation(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    cv_id INT,
+    diplome VARCHAR(50),
+    etablissement VARCHAR(50),
+    date_debut DATE,
+    date_fin DATE,
+    FOREIGN KEY (cv_id) REFERENCES cv(id)
+);
+
+CREATE TABLE cv_experience(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    cv_id INT,
+    poste VARCHAR(50),
+    entreprise VARCHAR(50),
+    date_debut DATE,
+    date_fin DATE,
+    FOREIGN KEY (cv_id) REFERENCES cv(id)
+);
+CREATE TABLE langue(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    libelle VARCHAR(50)
+);
+CREATE TABLE niveau(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    libelle VARCHAR(50)
+);
+
+CREATE TABLE cv_langue(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    cv_id INT,
+    langue_id INT,
+    niveau_id INT,
+    FOREIGN KEY (cv_id) REFERENCES cv(id),
+    FOREIGN KEY (langue_id) REFERENCES langue(id),
+    FOREIGN KEY (niveau_id) REFERENCES niveau(id)
+);
+CREATE TABLE statut_candidature(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    libelle VARCHAR(50)
+);
+
+CREATE TABLE candidature(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    annonce_id INT,
+    cv_id INT,
+    date_candidature DATETIME,
+    statut_id INT,
+    FOREIGN KEY (statut_id) REFERENCES statut_candidature(id),
+    FOREIGN KEY (annonce_id) REFERENCES annonce(id),
+    FOREIGN KEY (cv_id) REFERENCES cv(id)
+);
+

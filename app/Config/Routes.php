@@ -40,7 +40,17 @@ $routes->get('/besoins/(:num)/', 'Besoin::fiche/$1');
 $routes->get('/annonces', 'Annonce::genererForm');
 // $routes->get('/annonces/liste', 'Annonce::liste');
 $routes->post('/annonces/creer', 'Annonce::generer');
-$routes->get('/postule/(:num)', 'candidature::form');
+$routes->get('/postule/(:num)', 'cv::getPosteAnnonce/$1');
+$routes->post('/postuler', 'cv::insert');
+$routes->get('/candidatures/(:num)', 'Candidature::fiche/$1');
+// $routes->get('/candidatures/valider/(:num)', 'Candidature::valider/$1');
+// $routes->get('/candidatures/refuser/(:num)', 'Candidature::refuser/$1');
+$routes->get('/candidatures/liste', 'candidature::liste');
+
+// $routes->get('candidatures', 'candidature::liste');
+$routes->post('candidatures/valider/(:num)', 'candidature::valider/$1');
+$routes->post('candidatures/refuser/(:num)', 'candidature::refuser/$1');
+
 
 
 

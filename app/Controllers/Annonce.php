@@ -76,10 +76,12 @@ class Annonce extends BaseController
         $builder->where('estCloture', 0);
 
         $data['annonces'] = $builder->get()->getResult();
-
+        
 
 
         return view('annonces', $data);
     }
+
+    
 
 }

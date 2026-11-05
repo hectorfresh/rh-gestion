@@ -21,3 +21,16 @@ INSERT INTO poste(libelle, salaire_base, salaire_max) VALUES('Commercial', 3000,
 INSERT INTO poste(libelle, salaire_base, salaire_max) VALUES('Comptable', 3000, 4000000000);
 
 INSERT INTO budget(valeur) VALUES(200000);
+
+INSERT INTO langue(libelle) VALUES('Français');
+INSERT INTO langue(libelle) VALUES('Anglais');
+INSERT INTO langue(libelle) VALUES('Malagasy');
+
+INSERT INTO niveau(libelle) VALUES('Débutant');
+INSERT INTO niveau(libelle) VALUES('Intermédiaire');
+INSERT INTO niveau(libelle) VALUES('Avancé');
+INSERT INTO niveau(libelle) VALUES('Courant');
+
+INSERT INTO statut_candidature(libelle) VALUES('En attente');
+INSERT INTO statut_candidature(libelle) VALUES('Accepté');
+INSERT INTO statut_candidature(libelle) VALUES('Refusé');

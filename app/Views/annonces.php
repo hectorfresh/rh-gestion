@@ -1,3 +1,20 @@
+<?php 
+
+use App\Models\RoleModel;
+
+$roleModel = new RoleModel();
+
+$dg      = $roleModel->where('libelle', 'dg')->first()['id'] ?? null;
+$rh      = $roleModel->where('libelle', 'rh')->first()['id'] ?? null;
+$manager = $roleModel->where('libelle', 'manager')->first()['id'] ?? null;
+
+
+
+// $user = session()->get('user')['role_id'];
+$sessionUser = session()->get('user');
+$user = $sessionUser['role_id'] ?? null;
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -108,11 +125,13 @@
                                 </span>
                             </div>
                             
+                            <?php if ($user!=$dg || $user!=$rh || $user!=$manager) { ?>
                             <div class="annonce-footer">
                                 <a href="/postule/<?= esc($a->id) ?>" class="btn btn-warning btn-block">
                                     <i class="fa fa-paper-plane"></i> Postuler
                                 </a>
                             </div>
+                            <?php } ?>
                             
                         </div>
                     </div>
