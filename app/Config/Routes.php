@@ -55,6 +55,12 @@ $routes->get('/entretiens/mes', 'Entretien::mes');
 $routes->post('/entretiens/accepter/(:num)', 'Entretien::accepter/$1');
 $routes->post('/entretiens/refuser/(:num)', 'Entretien::refuser/$1');
 
+$routes->get('/entretiens/retour', 'Entretien::retour');
+$routes->post('/entretiens/embaucher/(:num)', 'Entretien::embaucher/$1');
+$routes->post('/entretiens/refuserRetour/(:num)', 'Entretien::refuserRetour/$1');
+
+
+
 // $routes->get('candidatures', 'candidature::liste');
 $routes->post('candidatures/valider/(:num)', 'candidature::valider/$1');
 $routes->post('candidatures/refuser/(:num)', 'candidature::refuser/$1');

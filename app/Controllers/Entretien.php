@@ -130,6 +130,99 @@ class Entretien extends BaseController
         return view('mes_entretiens', $data);
     }
 
+    public function retour()
+    {
+        $user = session()->get('user');
+        if ($user == null) {
+            return redirect()->to(base_url('login'));
+        }
+
+        $roleModel = new \App\Models\RoleModel();
+        $rh = $roleModel->where('libelle', 'rh')->first()['id'] ?? null;
+        $dg = $roleModel->where('libelle', 'dg')->first()['id'] ?? null;
+
+        if ($user['role_id'] != $rh && $user['role_id'] != $dg) {
+            return redirect()->to(base_url('/'))->with('error', 'Accès refusé.');
+        }
+
+        $db = \Config\Database::connect();
+
+        $builder = $db->table('candidature');
+        $builder->select('candidature.id,
+                          utilisateur.nom AS nom,
+                          poste.libelle AS poste,
+                          entretien.date_entretien AS date_entretien');
+        $builder->join('cv', 'candidature.cv_id = cv.id');
+
+        $builder->join('utilisateur', 'cv.utilisateur_id = utilisateur.id');
+
+        $builder->join('annonce', 'candidature.annonce_id = annonce.id');
+
+        $builder->join('besoin', 'annonce.besoin_id = besoin.id');
+
+        $builder->join('poste', 'besoin.poste_id = poste.id');
+
+        $builder->join('statut_candidature', 'candidature.statut_id = statut_candidature.id');
+
+        $builder->join('entretien', 'entretien.candidature_id = candidature.id');
+
+        $builder->join('statut_entretien', 'entretien.statut_id = statut_entretien.id');
+
+        $builder->where('statut_candidature.libelle', 'En attente d\'entretien');
+
+        $builder->where('statut_entretien.libelle', 'Accepté');
+
+        $builder->orderBy('candidature.date_candidature', 'DESC');
+
+        $data['candidatures'] = $builder->get()->getResultArray();
+
+        return view('retour_entretien', $data);
+    }
+
+    public function embaucher($id)
+    {
+        return $this->finaliser($id, 'Embauché');
+    }
+
+    public function refuserRetour($id)
+    {
+        return $this->finaliser($id, 'Non retenu');
+    }
+
+    private function finaliser($id, $libelle)
+    {
+        $user = session()->get('user');
+        if ($user == null) {
+            return redirect()->to(base_url('login'));
+        }
+
+        $roleModel = new \App\Models\RoleModel();
+        $rh = $roleModel->where('libelle', 'rh')->first()['id'] ?? null;
+        $dg = $roleModel->where('libelle', 'dg')->first()['id'] ?? null;
+
+        if ($user['role_id'] != $rh && $user['role_id'] != $dg) {
+            return redirect()->to(base_url('/'))->with('error', 'Accès refusé.');
+        }
+
+        $db = \Config\Database::connect();
+
+        $entretien = $db->table('entretien')->where('candidature_id', (int) $id)->get()->getRowArray();
+        if ($entretien && strtotime($entretien['date_entretien']) > time()) {
+            return redirect()->to(base_url('entretiens/retour'))->with('error', "L'entretien n'a pas encore eu lieu.");
+        }
+
+        $statut = $db->table('statut_candidature')->where('libelle', $libelle)->get()->getRowArray();
+        if (!$statut) {
+            return redirect()->back()->with('error', 'Statut introuvable.');
+        }
+
+        $db->table('candidature')
+           ->where('id', (int) $id)
+           ->update(['statut_id' => $statut['id']]);
+
+        return redirect()->to(base_url('entretiens/retour'))->with('success', 'Retour enregistré.');
+    }
+
     public function accepter($id)
     {
         return $this->changerStatut($id, 'Accepté');
@@ -154,9 +247,22 @@ class Entretien extends BaseController
             return redirect()->back()->with('error', 'Statut introuvable.');
         }
 
+        $entretien = $db->table('entretien')->where('id', (int) $id)->get()->getRowArray();
+
         $db->table('entretien')
            ->where('id', (int) $id)
            ->update(['statut_id' => $statut['id']]);
+
+        if ($libelle === 'Accepté' && $entretien) {
+            $statutCand = $db->table('statut_candidature')
+                             ->where('libelle', "En attente d'entretien")
+                             ->get()->getRowArray();
+            if ($statutCand) {
+                $db->table('candidature')
+                   ->where('id', $entretien['candidature_id'])
+                   ->update(['statut_id' => $statutCand['id']]);
+            }
+        }
 
         return redirect()->to(base_url('entretiens/mes'))->with('success', 'Reponse enregistree.');
     }

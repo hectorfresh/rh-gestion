@@ -97,6 +97,12 @@ $user = $sessionUser['role_id'] ?? null;
                         </a>
                     </li>
 
+                    <li class="<?= $active === 'retour_entretien' ? 'active' : '' ?>">
+                        <a href="<?= base_url('entretiens/retour') ?>">
+                            <i class="fa fa-clipboard"></i> Rapport entretien
+                        </a>
+                    </li>
+
             <?php } ?>
 
             
@@ -130,6 +136,8 @@ $user = $sessionUser['role_id'] ?? null;
     <?php } ?>
     
 </ul>
+
+
 
         </div>
     </div>

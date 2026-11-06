@@ -188,6 +188,15 @@ class Besoin extends BaseController
 
         if ($onlineUserRole!=null && $onlineUserRole==$dg) {
 
+                if ($depensesBesoin * $nombre >= $budget) {
+                    $statutRefuseDg = $statutModel->where('libelle', 'Refusé Par DG')->first();
+                    $query = $db->query("UPDATE besoin SET statut_id = ". $statutRefuseDg['id'] . " WHERE id = " . $id);
+                    $req = sprintf("INSERT INTO historique_statut_besoin(besoin_id, statut_besoin_id, date_changement) 
+                        VALUES (%d, %d, NOW() )", $id, $statutRefuseDg['id']);
+                    $db->query($req);
+                    return "Budget insuffisant : besoin refusé définitivement par DG";
+                }
+
                 $query = $db->query("UPDATE besoin SET statut_id = ". $idValideDg . " WHERE id = " . $id);
 
                 $req = sprintf("INSERT INTO historique_statut_besoin(besoin_id, statut_besoin_id, date_changement) 

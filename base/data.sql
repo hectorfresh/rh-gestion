@@ -36,6 +36,10 @@ INSERT INTO statut_candidature(libelle) VALUES('En attente');
 INSERT INTO statut_candidature(libelle) VALUES('Accepté');
 INSERT INTO statut_candidature(libelle) VALUES('Refusé');
 
+INSERT INTO statut_candidature(libelle) VALUES('En attente entretien');
+INSERT INTO statut_candidature(libelle) VALUES('Embauché');
+INSERT INTO statut_candidature(libelle) VALUES('Non retenu');
+
 INSERT INTO statut_entretien(libelle) VALUES('Proposé');
 INSERT INTO statut_entretien(libelle) VALUES('Accepté');
 INSERT INTO statut_entretien(libelle) VALUES('Refusé');

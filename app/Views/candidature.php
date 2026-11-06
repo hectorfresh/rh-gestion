@@ -12,6 +12,14 @@
     <link href="<?= base_url('assets/css/app.css') ?>" rel="stylesheet" type="text/css">
 </head>
 <body class="templatemo-bg-gray">
+<?php
+use App\Models\RoleModel;
+$roleModel = new RoleModel();
+$rh = $roleModel->where('libelle', 'rh')->first()['id'] ?? null;
+$dg = $roleModel->where('libelle', 'dg')->first()['id'] ?? null;
+$sessionUser = session()->get('user');
+$user = $sessionUser['role_id'] ?? null;
+?>
 <?= $this->include('navbar', ['active' => 'candidatures']) ?>
 
 <div class="container">
@@ -46,7 +54,7 @@
                         <a href="<?= base_url('candidatures/' . $candidature['id']) ?>" class="btn btn-info btn-xs">
                             <i class="fa fa-eye"></i> Voir
                         </a>
-                        <?php if ($candidature['statut'] === 'En attente') { ?>
+                        <?php if (($user == $rh || $user == $dg) && $candidature['statut'] === 'En attente') { ?>
                             <form action="<?= base_url('candidatures/valider/' . $candidature['id']) ?>"
                                   method="post" style="display:inline;">
                                 <?= csrf_field() ?>

@@ -22,6 +22,14 @@ class Candidature extends BaseController
         return redirect()->to(base_url('login'));
     }
 
+    $roleModel = new \App\Models\RoleModel();
+    $rh = $roleModel->where('libelle', 'rh')->first()['id'] ?? null;
+    $dg = $roleModel->where('libelle', 'dg')->first()['id'] ?? null;
+
+    if ($user['role_id'] != $rh && $user['role_id'] != $dg) {
+        return redirect()->to(base_url('/'))->with('error', 'Accès refusé.');
+    }
+
     $db = \Config\Database::connect();
 
 $builder = $db->table('candidature');
@@ -159,11 +167,39 @@ public function fiche($id)
 
 public function valider($id)
 {
+    $user = session()->get('user');
+    if ($user == null) {
+        return redirect()->to(base_url('login'));
+    }
+
+    $db = \Config\Database::connect();
+    $roleModel = new \App\Models\RoleModel();
+    $rh = $roleModel->where('libelle', 'rh')->first()['id'] ?? null;
+    $dg = $roleModel->where('libelle', 'dg')->first()['id'] ?? null;
+
+    if ($user['role_id'] != $rh && $user['role_id'] != $dg) {
+        return redirect()->to(base_url('candidatures/liste'))->with('error', 'Accès refusé.');
+    }
+
     return $this->changerStatut($id, 2);
 }
 
 public function refuser($id)
 {
+    $user = session()->get('user');
+    if ($user == null) {
+        return redirect()->to(base_url('login'));
+    }
+
+    $db = \Config\Database::connect();
+    $roleModel = new \App\Models\RoleModel();
+    $rh = $roleModel->where('libelle', 'rh')->first()['id'] ?? null;
+    $dg = $roleModel->where('libelle', 'dg')->first()['id'] ?? null;
+
+    if ($user['role_id'] != $rh && $user['role_id'] != $dg) {
+        return redirect()->to(base_url('candidatures/liste'))->with('error', 'Accès refusé.');
+    }
+
     return $this->changerStatut($id, 3);
 }
 
