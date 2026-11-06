@@ -43,6 +43,9 @@
                     <td><?= esc($candidature['poste']) ?></td>
                     <td><?= esc($candidature['statut']) ?></td>
                     <td>
+                        <a href="<?= base_url('candidatures/' . $candidature['id']) ?>" class="btn btn-info btn-xs">
+                            <i class="fa fa-eye"></i> Voir
+                        </a>
                         <?php if ($candidature['statut'] === 'En attente') { ?>
                             <form action="<?= base_url('candidatures/valider/' . $candidature['id']) ?>"
                                   method="post" style="display:inline;">

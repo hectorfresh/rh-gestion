@@ -6,6 +6,7 @@ INSERT INTO role(libelle) VALUES('candidat');
 INSERT INTO utilisateur(nom, email, mdp, role_id) VALUES('dg', 'dg@mail.com', '1234', 1);
 INSERT INTO utilisateur(nom, email, mdp, role_id) VALUES('rh', 'rh@mail.com', '1234', 2);
 INSERT INTO utilisateur(nom, email, mdp, role_id) VALUES('manager', 'manager@mail.com', '1234', 3);
+INSERT INTO utilisateur(nom, email, mdp, role_id) VALUES('candidat', 'candidat@mail.com', '1234', 4);
 
 INSERT INTO statut_besoin(libelle) VALUES('Créé');
 INSERT INTO statut_besoin(libelle) VALUES('Cloturé');
@@ -34,3 +35,7 @@ INSERT INTO niveau(libelle) VALUES('Courant');
 INSERT INTO statut_candidature(libelle) VALUES('En attente');
 INSERT INTO statut_candidature(libelle) VALUES('Accepté');
 INSERT INTO statut_candidature(libelle) VALUES('Refusé');
+
+INSERT INTO statut_entretien(libelle) VALUES('Proposé');
+INSERT INTO statut_entretien(libelle) VALUES('Accepté');
+INSERT INTO statut_entretien(libelle) VALUES('Refusé');

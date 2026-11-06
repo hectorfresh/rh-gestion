@@ -169,4 +169,28 @@ CREATE TABLE candidature(
     FOREIGN KEY (annonce_id) REFERENCES annonce(id),
     FOREIGN KEY (cv_id) REFERENCES cv(id)
 );
+CREATE TABLE historique_statut_candidature(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    candidature_id INT,
+    statut_candidature_id INT,
+    date_changement DATETIME,
+    FOREIGN KEY (candidature_id) REFERENCES candidature(id),
+    FOREIGN KEY (statut_candidature_id) REFERENCES statut_candidature(id)
+);
+CREATE TABLE statut_entretien(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    libelle VARCHAR(50)
+);
+
+CREATE TABLE entretien(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    candidature_id INT,
+    date_entretien DATETIME,
+    lieu VARCHAR(100),
+    commentaire TEXT,
+    statut_id INT,
+    FOREIGN KEY (statut_id) REFERENCES statut_entretien(id),
+    FOREIGN KEY (candidature_id) REFERENCES candidature(id)
+);
+
 

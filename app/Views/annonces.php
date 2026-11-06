@@ -7,6 +7,7 @@ $roleModel = new RoleModel();
 $dg      = $roleModel->where('libelle', 'dg')->first()['id'] ?? null;
 $rh      = $roleModel->where('libelle', 'rh')->first()['id'] ?? null;
 $manager = $roleModel->where('libelle', 'manager')->first()['id'] ?? null;
+$candidat = $roleModel->where('libelle', 'candidat')->first()['id'] ?? null;
 
 
 
@@ -125,11 +126,17 @@ $user = $sessionUser['role_id'] ?? null;
                                 </span>
                             </div>
                             
-                            <?php if ($user!=$dg || $user!=$rh || $user!=$manager) { ?>
+                            <?php if ($user === null || $user == $candidat) { ?>
                             <div class="annonce-footer">
-                                <a href="/postule/<?= esc($a->id) ?>" class="btn btn-warning btn-block">
-                                    <i class="fa fa-paper-plane"></i> Postuler
-                                </a>
+                                <?php if ($user == $candidat && isset($applied[$a->id])) { ?>
+                                    <span class="btn btn-default btn-block disabled">
+                                        <i class="fa fa-check"></i> Déjà postulé
+                                    </span>
+                                <?php } else { ?>
+                                    <a href="/postule/<?= esc($a->id) ?>" class="btn btn-warning btn-block">
+                                        <i class="fa fa-paper-plane"></i> Postuler
+                                    </a>
+                                <?php } ?>
                             </div>
                             <?php } ?>
                             

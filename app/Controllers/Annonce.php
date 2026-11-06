@@ -70,7 +70,7 @@ class Annonce extends BaseController
     {
         $db = \Config\Database::connect();
         $builder = $db->table('annonce');
-        $builder->select('*');
+        $builder->select('annonce.id as id, poste.libelle as libelle, poste.salaire_base as salaire_base');
         $builder->join('besoin', 'besoin.id=annonce.besoin_id');
         $builder->join('poste', 'besoin.poste_id=poste.id');
         $builder->where('estCloture', 0);
@@ -78,6 +78,18 @@ class Annonce extends BaseController
         $data['annonces'] = $builder->get()->getResult();
         
 
+
+        $data['applied'] = [];
+        $user = session()->get('user');
+        if ($user !== null) {
+            $ab = $db->table('candidature');
+            $ab->select('candidature.annonce_id');
+            $ab->join('cv', 'cv.id = candidature.cv_id');
+            $ab->where('cv.utilisateur_id', $user['id']);
+            foreach ($ab->get()->getResultArray() as $row) {
+                $data['applied'][$row['annonce_id']] = true;
+            }
+        }
 
         return view('annonces', $data);
     }

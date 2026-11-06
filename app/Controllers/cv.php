@@ -29,11 +29,12 @@ class cv extends BaseController
     }
     
     public function insert(){
-
+ 
      if(session()->get('user')==null){
             return redirect()->to('/login');
         }
 
+    $user = session()->get('user');
     $utilisateur_id = $user['id'];
 
     $titre  = trim((string) $this->request->getPost('titre'));
@@ -131,7 +132,7 @@ class cv extends BaseController
         return redirect()->back()->withInput()->with('error', "misy tsy mety avereno");
     }
 
-    return redirect()->to(base_url('/'))->with('success', 'lasa le cv');
+    return redirect()->to(base_url('candidatures/mes'))->with('success', 'Candidature envoyée avec succès.');
 }
 
 

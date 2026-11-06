@@ -7,6 +7,7 @@ $roleModel = new RoleModel();
 $dg      = $roleModel->where('libelle', 'dg')->first()['id'] ?? null;
 $rh      = $roleModel->where('libelle', 'rh')->first()['id'] ?? null;
 $manager = $roleModel->where('libelle', 'manager')->first()['id'] ?? null;
+$candidat = $roleModel->where('libelle', 'candidat')->first()['id'] ?? null;
 
 
 
@@ -37,10 +38,23 @@ $user = $sessionUser['role_id'] ?? null;
             <ul class="nav navbar-nav">
 
 
-            <?php if ($user !== null ) { ?>
+            <?php if ($user !== null && $user != $candidat) { ?>
                 <li class="<?= $active === 'accueil' ? 'active' : '' ?>">
                     <a href="<?= base_url('/accueil') ?>">
                         <i class="fa fa-home"></i> Accueil
+                    </a>
+                </li>
+                <?php } ?>
+
+                <?php if ($user == $candidat) { ?>
+                <li class="<?= $active === 'mes_candidatures' ? 'active' : '' ?>">
+                    <a href="<?= base_url('candidatures/mes') ?>">
+                        <i class="fa fa-file-text-o"></i> Mes candidatures
+                    </a>
+                </li>
+                <li class="<?= $active === 'mes_entretiens' ? 'active' : '' ?>">
+                    <a href="<?= base_url('entretiens/mes') ?>">
+                        <i class="fa fa-calendar"></i> Mes entretiens
                     </a>
                 </li>
                 <?php } ?>
@@ -74,6 +88,12 @@ $user = $sessionUser['role_id'] ?? null;
                     <li class="<?= $active === 'candidatures' ? 'active' : '' ?>">
                         <a href="<?= base_url('candidatures/liste') ?>">
                             <i class="fa fa-bullhorn"></i> Liste candidature
+                        </a>
+                    </li>
+
+                    <li class="<?= $active === 'entretiens' ? 'active' : '' ?>">
+                        <a href="<?= base_url('entretiens') ?>">
+                            <i class="fa fa-calendar"></i> Entretiens
                         </a>
                     </li>
 

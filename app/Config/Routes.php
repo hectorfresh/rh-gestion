@@ -42,10 +42,18 @@ $routes->get('/annonces', 'Annonce::genererForm');
 $routes->post('/annonces/creer', 'Annonce::generer');
 $routes->get('/postule/(:num)', 'cv::getPosteAnnonce/$1');
 $routes->post('/postuler', 'cv::insert');
-$routes->get('/candidatures/(:num)', 'Candidature::fiche/$1');
+$routes->get('/candidatures/(:num)', 'candidature::fiche/$1');
 // $routes->get('/candidatures/valider/(:num)', 'Candidature::valider/$1');
 // $routes->get('/candidatures/refuser/(:num)', 'Candidature::refuser/$1');
 $routes->get('/candidatures/liste', 'candidature::liste');
+$routes->get('/candidatures/mes', 'candidature::mesCandidatures');
+
+$routes->get('/entretiens', 'Entretien::liste');
+$routes->get('/entretiens/demander/(:num)', 'Entretien::demander/$1');
+$routes->post('/entretiens/save', 'Entretien::save');
+$routes->get('/entretiens/mes', 'Entretien::mes');
+$routes->post('/entretiens/accepter/(:num)', 'Entretien::accepter/$1');
+$routes->post('/entretiens/refuser/(:num)', 'Entretien::refuser/$1');
 
 // $routes->get('candidatures', 'candidature::liste');
 $routes->post('candidatures/valider/(:num)', 'candidature::valider/$1');
