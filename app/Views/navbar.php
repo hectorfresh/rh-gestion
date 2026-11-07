@@ -103,6 +103,14 @@ $user = $sessionUser['role_id'] ?? null;
                         </a>
                     </li>
 
+                    <li class="<?= $active === 'contrats' ? 'active' : '' ?>">
+                        <a href="<?= base_url('contrats') ?>">
+                            <i class="fa fa-file-text-o"></i> Contrats
+                        </a>
+                    </li>
+
+
+
             <?php } ?>
 
             

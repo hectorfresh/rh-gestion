@@ -45,6 +45,10 @@
                                 <button type="submit" class="btn btn-success btn-xs">
                                     <i class="fa fa-check"></i> Embaucher
                                 </button>
+
+
+
+
                             </form>
                             <form action="<?= base_url('entretiens/refuserRetour/' . $c['id']) ?>" method="post" style="display:inline;">
                                 <?= csrf_field() ?>
@@ -52,6 +56,13 @@
                                     <i class="fa fa-times"></i> Ne pas retenir
                                 </button>
                             </form>
+
+
+                                  <a href="<?= base_url('contrats/generer/' . $c['id']) ?>" class="btn btn-primary btn-xs">
+                                        <i class="fa fa-file-text-o"></i> Générer le contrat
+                                    </a>
+
+
                         <?php } else { ?>
                             <span class="text-muted">Entretien non encore réalisé</span>
                         <?php } ?>

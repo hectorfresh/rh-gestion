@@ -195,3 +195,24 @@ CREATE TABLE entretien(
 
 
 
+CREATE TABLE contrat(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    candidature_id INT UNIQUE,
+    type_contrat VARCHAR(20),
+    date_debut DATE,
+    date_fin DATE NULL,
+    salaire_propose DECIMAL(14,2),
+    salaire_negocie DECIMAL(14,2),
+    heures_travail INT,
+    teletravail TINYINT DEFAULT 0,
+    periode_essai TINYINT DEFAULT 0,
+    heures_sup TINYINT DEFAULT 0,
+    mutuelle TINYINT DEFAULT 0,
+    avantages TEXT,
+    date_creation DATETIME,
+    FOREIGN KEY (candidature_id) REFERENCES candidature(id)
+);
+
+
+ALTER TABLE contrat
+    MODIFY type_contrat ENUM('Essai', 'CDD', 'CDI') NOT NULL;

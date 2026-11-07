@@ -43,3 +43,12 @@ INSERT INTO statut_candidature(libelle) VALUES('Non retenu');
 INSERT INTO statut_entretien(libelle) VALUES('Proposé');
 INSERT INTO statut_entretien(libelle) VALUES('Accepté');
 INSERT INTO statut_entretien(libelle) VALUES('Refusé');
+
+
+
+-- Vérifiez les IDs réels de vos statuts
+SELECT * FROM statut_candidature;
+
+-- Créer une candidature embauchée de test (adaptez cv_id et annonce_id à vos données)
+INSERT INTO candidature (annonce_id, cv_id, date_candidature, statut_id)
+VALUES (1, 1, NOW(), (SELECT id FROM statut_candidature WHERE libelle='Embauché' LIMIT 1));

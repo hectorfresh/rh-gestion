@@ -68,6 +68,9 @@ $routes->post('candidatures/refuser/(:num)', 'candidature::refuser/$1');
 
 
 
-
+$routes->get('/contrats', 'Contrat::index');
+$routes->get('/contrats/generer/(:num)', 'Contrat::formulaire/$1');
+$routes->post('/contrats/save/(:num)', 'Contrat::save/$1');
+$routes->get('/contrats/pdf/(:num)', 'Contrat::pdf/$1');
 
 
