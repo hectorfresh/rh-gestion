@@ -168,7 +168,9 @@ class Entretien extends BaseController
 
         $builder->join('statut_entretien', 'entretien.statut_id = statut_entretien.id');
 
-        $builder->where('statut_candidature.libelle', 'En attente d\'entretien');
+    
+// ✅ APRÈS
+$builder->where('statut_candidature.libelle', 'En attente entretien');
 
         $builder->where('statut_entretien.libelle', 'Accepté');
 
@@ -178,6 +180,7 @@ class Entretien extends BaseController
 
         return view('retour_entretien', $data);
     }
+
 
     public function embaucher($id)
     {
@@ -254,10 +257,13 @@ class Entretien extends BaseController
            ->update(['statut_id' => $statut['id']]);
 
         if ($libelle === 'Accepté' && $entretien) {
-            $statutCand = $db->table('statut_candidature')
-                             ->where('libelle', "En attente d'entretien")
-                             ->get()->getRowArray();
-            if ($statutCand) {
+ 
+$statutCand = $db->table('statut_candidature')
+                 ->where('libelle', "En attente entretien")
+                 ->get()->getRowArray();
+
+
+                            if ($statutCand) {
                 $db->table('candidature')
                    ->where('id', $entretien['candidature_id'])
                    ->update(['statut_id' => $statutCand['id']]);

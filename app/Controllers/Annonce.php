@@ -13,58 +13,91 @@ use App\Controllers\BaseController;
 
 class Annonce extends BaseController
 {
-    public function genererForm(): string
-    {
+public function genererForm(): string
+{
+    $statutModel = new StatutBesoinModel();
+    $idValideDg  = $statutModel->where('libelle', 'Validé Par DG')->first()['id'];
 
-        $statutModel = new StatutBesoinModel();
-        $idValideDg = $statutModel->where('libelle','Validé Par DG')->first()['id'];
+    $db = \Config\Database::connect();
+    $builder = $db->table('besoin');
+    $builder->select('besoin.id AS id, poste.libelle AS libelle');   // ✅ on précise l'origine
+    $builder->join('poste', 'besoin.poste_id = poste.id');
+    $builder->where('besoin.statut_id', $idValideDg);
+    $data['besoins'] = $builder->get()->getResult();
 
-        $db = \Config\Database::connect();
-        $builder = $db->table('besoin');
-        $builder->select('*');
-        $builder->join('poste', 'besoin.poste_id=poste.id');
-        $builder->where('besoin.statut_id', $idValideDg);
-        $data['besoins'] = $builder->get()->getResult();
-        
-        return view('generation_annonces', $data);
+    return view('generation_annonces', $data);
+}
+
+public function generer()
+{
+    $idBesoin = (int) $this->request->getPost('besoin');
+    $desce    = trim((string) $this->request->getPost('desce'));
+
+    // --- Validation : ID de besoin obligatoire ---
+    if ($idBesoin <= 0) {
+        return redirect()->back()->withInput()
+            ->with('error', 'Veuillez sélectionner un besoin valide.');
     }
 
+    // --- Validation : le besoin doit exister ---
+    $besoinModel = new BesoinModel();
+    $besoin = $besoinModel->find($idBesoin);
+    if (!$besoin) {
+        return redirect()->back()->withInput()
+            ->with('error', 'Ce besoin est introuvable.');
+    }
 
-    public function generer()
-    {
-        $idBesoin = $this->request->getPost('besoin');
-        $desce = $this->request->getPost('desce');
+    // --- Récupération du statut "Cloturé" ---
+    $statutModel = new StatutBesoinModel();
+    $statutCloture = $statutModel->where('libelle', 'Cloturé')->first();
+    if (!$statutCloture) {
+        return redirect()->back()->withInput()
+            ->with('error', "Statut 'Cloturé' introuvable en base.");
+    }
+    $idCloture = $statutCloture['id'];
 
-        $statutModel = new StatutBesoinModel();
-        $besoinModel = new BesoinModel();
-        $annonceModel = new AnnonceModel();
-        $idCloture = $statutModel->where('libelle','Cloturé')->first()['id'];
+    $annonceModel = new AnnonceModel();
+    $db = \Config\Database::connect();
 
-        $db = \Config\Database::connect();
-        $builder = $db->table('besoin');
-        $builder->set('statut_id', $idCloture);
-        $builder->update();
+    // --- Transaction pour tout ou rien ---
+    $db->transBegin();
 
-        $builder = $db->table('historique_statut_besoin');
-        $builder->set('besoin_id', $idBesoin);
-        $builder->set('statut_besoin_id', $idCloture);
-        $builder->set('date_changement', date('Y-m-d H:i:s', time()));
-        $builder->insert();
-        
-        $nombre = $besoinModel->where('id', $idBesoin)->first()['nombre'];
+    try {
+        // ✅ FIX Bug 1 : WHERE ciblé sur CE besoin
+        $db->table('besoin')
+           ->where('id', $idBesoin)
+           ->update(['statut_id' => $idCloture]);
 
-        for ($i=0; $i < $nombre; $i++) { 
+        // ✅ FIX Bug 2 : ID validé, insertion sécurisée
+        $db->table('historique_statut_besoin')->insert([
+            'besoin_id'        => $idBesoin,
+            'statut_besoin_id' => $idCloture,
+            'date_changement'  => date('Y-m-d H:i:s'),
+        ]);
+
+        // --- Création des annonces (une par poste demandé) ---
+        $nombre = (int) $besoin['nombre'];
+        for ($i = 0; $i < $nombre; $i++) {
             $annonceModel->insert([
-                'besoin_id'=>$idBesoin, 
-                'desce'=>$desce,
-                'date_creation'=>date('Y-m-d H:i:s', time()), 
-                'estCloture'=>0
+                'besoin_id'     => $idBesoin,
+                'desce'         => $desce,
+                'date_creation' => date('Y-m-d H:i:s'),
+                'estCloture'    => 0,
             ]);
         }
 
-        return "Annonce Créée";
+        $db->transCommit();
+
+    } catch (\Throwable $e) {
+        $db->transRollback();
+        log_message('error', 'Erreur génération annonce : ' . $e->getMessage());
+        return redirect()->back()->withInput()
+            ->with('error', "Erreur lors de la génération de l'annonce. Réessayez.");
     }
 
+    return redirect()->to(base_url('annonces'))
+        ->with('success', 'Annonce(s) créée(s) avec succès.');
+}
 
     public function liste()
     {
@@ -73,8 +106,10 @@ class Annonce extends BaseController
         $builder->select('annonce.id as id, poste.libelle as libelle, poste.salaire_base as salaire_base');
         $builder->join('besoin', 'besoin.id=annonce.besoin_id');
         $builder->join('poste', 'besoin.poste_id=poste.id');
-        $builder->where('estCloture', 0);
-
+        $builder->groupStart()
+                ->where('annonce.estCloture', 0)
+                ->orWhere('annonce.estCloture IS NULL')
+                ->groupEnd();
         $data['annonces'] = $builder->get()->getResult();
         
 

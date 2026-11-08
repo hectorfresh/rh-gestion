@@ -219,22 +219,24 @@ class Contrat extends BaseController
 
         return view('mes_contrats', $data);
     }
+public function accepter($id)
+{
+    $user = session()->get('user');
+    if ($user == null) return redirect()->to(base_url('login'));
 
-    /** Candidat accepte la proposition */
-    public function accepter($id)
-    {
-        $user = session()->get('user');
-        if ($user == null) return redirect()->to(base_url('login'));
+    $db = \Config\Database::connect();
+    $contrat = $this->getContratForCandidate($id);
 
-        $db = \Config\Database::connect();
-        $contrat = $this->getContratForCandidate($id);
-        if (!$contrat) {
-            return redirect()->to(base_url('contrats/mes'))->with('error', 'Contrat introuvable.');
-        }
-        if ($contrat['statut'] !== 'Proposé') {
-            return redirect()->to(base_url('contrats/mes'))->with('error', 'Ce contrat ne peut plus être accepté.');
-        }
+    if (!$contrat) {
+        return redirect()->to(base_url('contrats/mes'))->with('error', 'Contrat introuvable.');
+    }
+    if ($contrat['statut'] !== 'Proposé') {
+        return redirect()->to(base_url('contrats/mes'))->with('error', 'Ce contrat ne peut plus être accepté.');
+    }
 
+    $db->transBegin();
+    try {
+        // 1. Accepter le contrat
         $db->table('contrat')
            ->where('id', (int) $id)
            ->update([
@@ -242,36 +244,34 @@ class Contrat extends BaseController
                'date_reponse' => date('Y-m-d H:i:s'),
            ]);
 
-        return redirect()->to(base_url('contrats/mes'))->with('success',
-            'Félicitations ! Vous avez accepté le contrat. Vous pouvez maintenant télécharger le PDF.');
-    }
+        // 2. Fermer TOUTES les annonces du même besoin
+        $candidature = $db->table('candidature')
+                          ->where('id', $contrat['candidature_id'])
+                          ->get()->getRowArray();
 
-    /** Candidat refuse la proposition */
-    public function refuser($id)
-    {
-        $user = session()->get('user');
-        if ($user == null) return redirect()->to(base_url('login'));
+        if ($candidature) {
+            $annonce = $db->table('annonce')
+                          ->where('id', $candidature['annonce_id'])
+                          ->get()->getRowArray();
 
-        $db = \Config\Database::connect();
-        $contrat = $this->getContratForCandidate($id);
-        if (!$contrat) {
-            return redirect()->to(base_url('contrats/mes'))->with('error', 'Contrat introuvable.');
-        }
-        if ($contrat['statut'] !== 'Proposé') {
-            return redirect()->to(base_url('contrats/mes'))->with('error', 'Ce contrat ne peut plus être refusé.');
+            if ($annonce) {
+                $db->table('annonce')
+                   ->where('besoin_id', $annonce['besoin_id'])
+                   ->update(['estCloture' => 1]);
+            }
         }
 
-        $db->table('contrat')
-           ->where('id', (int) $id)
-           ->update([
-               'statut'       => 'Refusé',
-               'date_reponse' => date('Y-m-d H:i:s'),
-           ]);
+        $db->transCommit();
 
-        return redirect()->to(base_url('contrats/mes'))->with('success',
-            'Vous avez refusé la proposition. Les RH seront notifiés.');
+    } catch (\Throwable $e) {
+        $db->transRollback();
+        log_message('error', 'Erreur accepter contrat : ' . $e->getMessage());
+        return redirect()->to(base_url('contrats/mes'))->with('error', 'Erreur lors de l\'acceptation.');
     }
 
+    return redirect()->to(base_url('contrats/mes'))->with('success',
+        'Félicitations ! Vous avez accepté le contrat. Vous pouvez maintenant télécharger le PDF.');
+}
     private function getContratForCandidate($contrat_id)
     {
         $user = session()->get('user');
