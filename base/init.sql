@@ -202,3 +202,69 @@ CREATE TABLE contrat (
     date_reponse DATETIME NULL,
     FOREIGN KEY (candidature_id) REFERENCES candidature(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+
+
+
+
+
+
+-- ==========================================
+-- MODULE GESTION DES CONGÉS
+-- ==========================================
+
+CREATE TABLE type_conge (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    libelle VARCHAR(50) NOT NULL,
+    jours_max_par_an INT NULL,
+    justificatif_requis TINYINT DEFAULT 0,
+    couleur VARCHAR(7) DEFAULT '#3498db'
+) ENGINE=InnoDB;
+
+CREATE TABLE statut_conge (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    libelle VARCHAR(50) NOT NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE solde_conge (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    utilisateur_id INT NOT NULL,
+    type_conge_id INT NOT NULL,
+    annee INT NOT NULL,
+    jours_acquis DECIMAL(4,1) DEFAULT 0,
+    jours_pris DECIMAL(4,1) DEFAULT 0,
+    UNIQUE KEY uk_solde (utilisateur_id, type_conge_id, annee),
+    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id),
+    FOREIGN KEY (type_conge_id) REFERENCES type_conge(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE demande_conge (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    utilisateur_id INT NOT NULL,
+    type_conge_id INT NOT NULL,
+    date_debut DATE NOT NULL,
+    date_fin DATE NOT NULL,
+    nombre_jours INT NOT NULL,
+    motif TEXT,
+    justificatif VARCHAR(255) NULL,
+    statut_id INT NOT NULL,
+    date_demande DATETIME NOT NULL,
+    date_traitement DATETIME NULL,
+    traite_par INT NULL,
+    commentaire_validation TEXT NULL,
+    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id),
+    FOREIGN KEY (type_conge_id) REFERENCES type_conge(id),
+    FOREIGN KEY (statut_id) REFERENCES statut_conge(id),
+    FOREIGN KEY (traite_par) REFERENCES utilisateur(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE historique_statut_conge (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    demande_conge_id INT NOT NULL,
+    statut_conge_id INT NOT NULL,
+    date_changement DATETIME NOT NULL,
+    utilisateur_id INT NULL,
+    FOREIGN KEY (demande_conge_id) REFERENCES demande_conge(id),
+    FOREIGN KEY (statut_conge_id) REFERENCES statut_conge(id),
+    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id)
+) ENGINE=InnoDB;

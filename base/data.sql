@@ -65,3 +65,30 @@ INSERT INTO statut_entretien (libelle) VALUES
 ('Proposé'),
 ('Accepté'),
 ('Refusé');
+
+
+
+-- Types de congé
+INSERT INTO type_conge (libelle, jours_max_par_an, justificatif_requis, couleur) VALUES
+('Congé payé',        30,  0, '#3498db'),
+('Congé maladie',     15,  1, '#e74c3c'),
+('Congé sans solde',  NULL, 0, '#95a5a6'),
+('Congé maternité',   112, 1, '#9b59b6'),
+('Congé paternité',   11,  1, '#2ecc71');
+
+-- Statuts de demande
+INSERT INTO statut_conge (libelle) VALUES
+('En attente'),
+('Accepté'),
+('Refusé'),
+('Annulé');
+
+-- Soldes initiaux pour l'année en cours (ex: 2026)
+-- On donne 30 jours de congé payé à tous les utilisateurs
+INSERT INTO solde_conge (utilisateur_id, type_conge_id, annee, jours_acquis, jours_pris)
+SELECT u.id, 
+       (SELECT id FROM type_conge WHERE libelle='Congé payé' LIMIT 1), 
+       2026, 
+       30, 
+       0
+FROM utilisateur u;

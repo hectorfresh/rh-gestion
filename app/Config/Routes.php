@@ -77,3 +77,14 @@ $routes->post('/contrats/refuser/(:num)', 'Contrat::refuser/$1');
 $routes->get('/contrats/pdf/(:num)', 'Contrat::pdf/$1');
 
 
+
+// Gestion des congés
+$routes->get('/conges/mes', 'Conge::mes');
+$routes->get('/conges/formulaire', 'Conge::formulaire');
+$routes->post('/conges/save', 'Conge::save');
+$routes->get('/conges/annuler/(:num)', 'Conge::annuler/$1');
+$routes->get('/conges/validation', 'Conge::validation');
+$routes->post('/conges/accepter/(:num)', 'Conge::accepter/$1');
+$routes->post('/conges/refuser/(:num)', 'Conge::refuser/$1');
+
+

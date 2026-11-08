@@ -57,6 +57,21 @@ $user = $sessionUser['role_id'] ?? null;
                         <i class="fa fa-calendar"></i> Mes entretiens
                     </a>
                 </li>
+
+
+
+                <?php if ($user !== null) { ?>
+                <li class="<?= $active === 'mes_conges' ? 'active' : '' ?>">
+                    <a href="<?= base_url('conges/mes') ?>">
+                        <i class="fa fa-plane"></i> Mes congés
+                    </a>
+                </li>
+            <?php } ?>
+
+
+
+
+
                 <li class="<?= $active === 'mes_contrats' ? 'active' : '' ?>">
                         <a href="<?= base_url('contrats/mes') ?>">
                             <i class="fa fa-file-text-o"></i> Mes contrats
@@ -114,6 +129,13 @@ $user = $sessionUser['role_id'] ?? null;
                         </a>
                     </li>
 
+
+
+                    <li class="<?= $active === 'validation_conges' ? 'active' : '' ?>">
+                        <a href="<?= base_url('conges/validation') ?>">
+                            <i class="fa fa-check-square"></i> Validation congés
+                        </a>
+                    </li>
 
 
             <?php } ?>
