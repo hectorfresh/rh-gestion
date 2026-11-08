@@ -57,6 +57,11 @@ $user = $sessionUser['role_id'] ?? null;
                         <i class="fa fa-calendar"></i> Mes entretiens
                     </a>
                 </li>
+                <li class="<?= $active === 'mes_contrats' ? 'active' : '' ?>">
+                        <a href="<?= base_url('contrats/mes') ?>">
+                            <i class="fa fa-file-text-o"></i> Mes contrats
+                        </a>
+                    </li>
                 <?php } ?>
 
 

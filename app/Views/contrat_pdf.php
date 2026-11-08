@@ -1,7 +1,12 @@
 <?php
 $c = $contrat;
-$ouiNon = function ($v) { return $v ? 'Oui' : 'Non'; };
-$fmtDate = function ($d) { return $d ? date('d/m/Y', strtotime($d)) : '—'; };
+$fmtDate = fn($d) => $d ? date('d/m/Y', strtotime($d)) : '—';
+$fmtTime = fn($t) => $t ? substr($t, 0, 5) : '—';
+$types = [
+    'Essai' => "Contrat d'essai",
+    'CDD'   => 'Contrat à durée déterminée (CDD)',
+    'CDI'   => 'Contrat à durée indéterminée (CDI)',
+];
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -11,7 +16,8 @@ $fmtDate = function ($d) { return $d ? date('d/m/Y', strtotime($d)) : '—'; };
     body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #333; }
     h1 { text-align: center; color: #b8791a; font-size: 22px; margin-bottom: 4px; }
     .subtitle { text-align: center; color: #888; font-size: 11px; margin-bottom: 30px; }
-    .section-title { background: #fdf0d5; color: #b8791a; padding: 8px 12px; font-weight: bold; margin-top: 20px; margin-bottom: 10px; }
+    .section-title { background: #fdf0d5; color: #b8791a; padding: 8px 12px;
+                     font-weight: bold; margin-top: 20px; margin-bottom: 10px; }
     table { width: 100%; border-collapse: collapse; }
     td { padding: 6px 10px; border-bottom: 1px solid #eee; vertical-align: top; }
     td.label { width: 40%; color: #666; font-weight: bold; }
@@ -35,56 +41,33 @@ $fmtDate = function ($d) { return $d ? date('d/m/Y', strtotime($d)) : '—'; };
 
 <div class="section-title">2. Caractéristiques du contrat</div>
 <table>
-<tr>
-    <td class="label">Type de contrat</td>
-    <td>
-        <?php
-            $types = [
-                'Essai' => 'Contrat d\'essai',
-                'CDD'   => 'Contrat à durée déterminée (CDD)',
-                'CDI'   => 'Contrat à durée indéterminée (CDI)',
-            ];
-            echo esc($types[$c['type_contrat']] ?? $c['type_contrat']);
-        ?>
-    </td>
-</tr>    <tr><td class="label">Date de début</td><td><?= $fmtDate($c['date_debut']) ?></td></tr>
-<tr>
-    <td class="label">Date de fin</td>
-    <td>
-        <?php if ($c['type_contrat'] === 'CDI'): ?>
-            Durée indéterminée
-        <?php else: ?>
-            <?= $fmtDate($c['date_fin']) ?>
-        <?php endif; ?>
-    </td>
-</tr>    <tr><td class="label">Heures de travail / semaine</td><td><?= (int) $c['heures_travail'] ?> h</td></tr>
+    <tr><td class="label">Type de contrat</td><td><?= esc($types[$c['type_contrat']] ?? $c['type_contrat']) ?></td></tr>
+    <tr><td class="label">Date de début</td><td><?= $fmtDate($c['date_debut']) ?></td></tr>
+    <tr><td class="label">Date de fin</td>
+        <td><?= $c['type_contrat'] === 'CDI' ? 'Durée indéterminée' : $fmtDate($c['date_fin']) ?></td></tr>
 </table>
 
 <div class="section-title">3. Rémunération</div>
 <table>
-    <tr><td class="label">Salaire proposé</td><td><?= number_format($c['salaire_propose'], 2) ?></td></tr>
-    <tr><td class="label">Salaire négocié (retenu)</td><td><strong><?= number_format($c['salaire_negocie'], 2) ?></strong></td></tr>
+    <tr><td class="label">Salaire mensuel brut</td><td><strong><?= number_format($c['salaire_negocie'], 2) ?></strong></td></tr>
 </table>
 
-<div class="section-title">4. Conditions particulières</div>
+<div class="section-title">4. Horaires de travail</div>
 <table>
-    <tr><td class="label">Télétravail autorisé</td><td><?= $ouiNon($c['teletravail']) ?></td></tr>
-    <tr><td class="label">Période d'essai</td><td><?= $ouiNon($c['periode_essai']) ?></td></tr>
-    <tr><td class="label">Heures supplémentaires</td><td><?= $ouiNon($c['heures_sup']) ?></td></tr>
-    <tr><td class="label">Mutuelle santé</td><td><?= $ouiNon($c['mutuelle']) ?></td></tr>
-    <tr><td class="label">Avantages</td><td><?= nl2br(esc($c['avantages'] ?: '—')) ?></td></tr>
+    <tr><td class="label">Heure de début</td><td><?= $fmtTime($c['heure_debut']) ?></td></tr>
+    <tr><td class="label">Heure de fin</td><td><?= $fmtTime($c['heure_fin']) ?></td></tr>
+</table>
+
+<div class="section-title">5. Acceptation</div>
+<table>
+    <tr><td class="label">Statut du contrat</td><td><strong style="color:#5cb85c;">Accepté par le candidat</strong></td></tr>
+    <tr><td class="label">Date d'acceptation</td><td><?= date('d/m/Y à H:i', strtotime($c['date_reponse'])) ?></td></tr>
 </table>
 
 <table class="signature">
     <tr>
-        <td>
-            <strong>Signature de l'employeur</strong><br><br>
-            _______________________
-        </td>
-        <td>
-            <strong>Signature du salarié</strong><br><br>
-            _______________________
-        </td>
+        <td><strong>Signature de l'employeur</strong><br><br>_______________________</td>
+        <td><strong>Signature du salarié</strong><br><br>_______________________</td>
     </tr>
 </table>
 

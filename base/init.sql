@@ -1,218 +1,204 @@
-CREATE DATABASE rh;
+-- ==========================================
+-- BASE DE DONNÉES : SYSTÈME DE RECRUTEMENT
+-- Fichier : init.sql (Structure uniquement)
+-- ==========================================
+
+DROP DATABASE IF EXISTS rh;
+CREATE DATABASE rh CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE rh;
 
-CREATE TABLE role(
-    id INT PRIMARY KEY AUTO_INCREMENT, 
-    libelle VARCHAR(50)
-);
+-- ------------------------------------------
+-- 1. TABLES DE RÉFÉRENCE (Indépendantes)
+-- ------------------------------------------
 
-CREATE TABLE statut_besoin(
-    id INT PRIMARY KEY AUTO_INCREMENT, 
-    libelle VARCHAR(50)
-);
-
-CREATE TABLE utilisateur(
+CREATE TABLE role (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    nom VARCHAR(50), 
-    email VARCHAR(50), 
-    mdp VARCHAR(50), 
-    role_id INT, 
+    libelle VARCHAR(50) NOT NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE statut_besoin (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    libelle VARCHAR(50) NOT NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE poste (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    libelle VARCHAR(50) NOT NULL,
+    salaire_base DECIMAL(14, 2) NOT NULL,
+    salaire_max DECIMAL(14, 2) NOT NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE budget (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    valeur DECIMAL(14, 2) NOT NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE langue (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    libelle VARCHAR(50) NOT NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE niveau (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    libelle VARCHAR(50) NOT NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE statut_candidature (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    libelle VARCHAR(50) NOT NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE statut_entretien (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    libelle VARCHAR(50) NOT NULL
+) ENGINE=InnoDB;
+
+-- ------------------------------------------
+-- 2. UTILISATEURS
+-- ------------------------------------------
+
+CREATE TABLE utilisateur (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL UNIQUE,
+    mdp VARCHAR(255) NOT NULL,
+    role_id INT NOT NULL,
     FOREIGN KEY (role_id) REFERENCES role(id)
-);
+) ENGINE=InnoDB;
 
+-- ------------------------------------------
+-- 3. BESOINS & ANNONCES
+-- ------------------------------------------
 
-CREATE TABLE poste(
-    id INT PRIMARY KEY AUTO_INCREMENT, 
-    libelle VARCHAR(50), 
-    salaire_base DECIMAL(14, 2), 
-    salaire_max DECIMAL(14,2)
-);
-
-CREATE TABLE besoin(
-    id INT PRIMARY KEY AUTO_INCREMENT, 
-    poste_id INT, 
-    nombre INT, 
-    desce TEXT, 
-    statut_id INT, 
-    date_creation DATETIME, 
-    FOREIGN KEY (statut_id) REFERENCES statut_besoin(id),
-    FOREIGN KEY (poste_id) REFERENCES poste(id) 
-);
-
-
-CREATE TABLE annonce(
-    id INT PRIMARY KEY AUTO_INCREMENT, 
-    besoin_id INT, 
-    date_creation DATETIME, 
-    desce TEXT, 
-    estCloture INT,
-    FOREIGN KEY (besoin_id) REFERENCES besoin(id)
-);
-
-
-CREATE TABLE historique_statut_besoin(
-    id INT PRIMARY KEY AUTO_INCREMENT, 
-    besoin_id INT, 
-    statut_besoin_id INT,
-    date_changement DATETIME,  
-    FOREIGN KEY (besoin_id) REFERENCES besoin(id),
-    FOREIGN KEY (statut_besoin_id) REFERENCES statut_besoin(id) 
-);
-
-
-
-
-CREATE TABLE budget(
-    id INT PRIMARY KEY AUTO_INCREMENT, 
-    valeur DECIMAL(14,2)
-);
-
--- CREATE TABLE candidature(
---     id INT PRIMARY KEY AUTO_INCREMENT, 
---     annonce_id INT, 
---     utilisateur_id INT, 
---     date_candidature DATETIME, 
---     FOREIGN KEY (annonce_id) REFERENCES annonce(id),
---     FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id)
--- );
-
--- CREATE TABLE cv(
---     id INT PRIMARY KEY AUTO_INCREMENT,
---     utilisateur_id INT,
---     dilplome_id INT,
---     experience_id INT,
---     FOREIGN KEY (experience_id) REFERENCES experience(id),
---     FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id),
---     FOREIGN KEY (dilplome_id) REFERENCES diplome(id)
--- );
-
--- CREATE TABLE experience(
---     id INT PRIMARY KEY AUTO_INCREMENT,
---     descri TEXT,
---     etablissement VARCHAR(50),  /*ou entreprise*/
---     DATE date_debut,
---     DATE date_fin
-    
--- );
-
-CREATE TABLE cv(
+CREATE TABLE besoin (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    utilisateur_id INT,
-    titre VARCHAR(50),
+    poste_id INT NOT NULL,
+    nombre INT NOT NULL,
+    desce TEXT,
+    statut_id INT NOT NULL,
+    date_creation DATETIME NOT NULL,
+    FOREIGN KEY (statut_id) REFERENCES statut_besoin(id),
+    FOREIGN KEY (poste_id) REFERENCES poste(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE historique_statut_besoin (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    besoin_id INT NOT NULL,
+    statut_besoin_id INT NOT NULL,
+    date_changement DATETIME NOT NULL,
+    FOREIGN KEY (besoin_id) REFERENCES besoin(id),
+    FOREIGN KEY (statut_besoin_id) REFERENCES statut_besoin(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE annonce (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    besoin_id INT NOT NULL,
+    date_creation DATETIME NOT NULL,
+    desce TEXT,
+    estCloture INT DEFAULT 0,
+    FOREIGN KEY (besoin_id) REFERENCES besoin(id)
+) ENGINE=InnoDB;
+
+-- ------------------------------------------
+-- 4. CV & CANDIDATURES
+-- ------------------------------------------
+
+CREATE TABLE cv (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    utilisateur_id INT NOT NULL,
+    titre VARCHAR(50) NOT NULL,
     descri TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id)
-);
+) ENGINE=InnoDB;
 
-
-
-CREATE TABLE cv_identite(
+CREATE TABLE cv_identite (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    cv_id INT,
+    cv_id INT NOT NULL,
     nom VARCHAR(50),
     telephone VARCHAR(20),
     adresse VARCHAR(100),
     ville VARCHAR(50),
     email VARCHAR(50),
-    FOREIGN KEY (cv_id) REFERENCES cv(id)
-);
+    FOREIGN KEY (cv_id) REFERENCES cv(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
 
-CREATE TABLE cv_formation(
+CREATE TABLE cv_formation (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    cv_id INT,
+    cv_id INT NOT NULL,
     diplome VARCHAR(50),
     etablissement VARCHAR(50),
     date_debut DATE,
     date_fin DATE,
-    FOREIGN KEY (cv_id) REFERENCES cv(id)
-);
+    FOREIGN KEY (cv_id) REFERENCES cv(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
 
-CREATE TABLE cv_experience(
+CREATE TABLE cv_experience (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    cv_id INT,
+    cv_id INT NOT NULL,
     poste VARCHAR(50),
     entreprise VARCHAR(50),
     date_debut DATE,
     date_fin DATE,
-    FOREIGN KEY (cv_id) REFERENCES cv(id)
-);
-CREATE TABLE langue(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    libelle VARCHAR(50)
-);
-CREATE TABLE niveau(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    libelle VARCHAR(50)
-);
+    FOREIGN KEY (cv_id) REFERENCES cv(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
 
-CREATE TABLE cv_langue(
+CREATE TABLE cv_langue (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    cv_id INT,
-    langue_id INT,
-    niveau_id INT,
-    FOREIGN KEY (cv_id) REFERENCES cv(id),
+    cv_id INT NOT NULL,
+    langue_id INT NOT NULL,
+    niveau_id INT NOT NULL,
+    FOREIGN KEY (cv_id) REFERENCES cv(id) ON DELETE CASCADE,
     FOREIGN KEY (langue_id) REFERENCES langue(id),
     FOREIGN KEY (niveau_id) REFERENCES niveau(id)
-);
-CREATE TABLE statut_candidature(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    libelle VARCHAR(50)
-);
+) ENGINE=InnoDB;
 
-CREATE TABLE candidature(
+CREATE TABLE candidature (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    annonce_id INT,
-    cv_id INT,
-    date_candidature DATETIME,
-    statut_id INT,
+    annonce_id INT NOT NULL,
+    cv_id INT NOT NULL,
+    date_candidature DATETIME NOT NULL,
+    statut_id INT NOT NULL,
     FOREIGN KEY (statut_id) REFERENCES statut_candidature(id),
     FOREIGN KEY (annonce_id) REFERENCES annonce(id),
     FOREIGN KEY (cv_id) REFERENCES cv(id)
-);
-CREATE TABLE historique_statut_candidature(
+) ENGINE=InnoDB;
+
+CREATE TABLE historique_statut_candidature (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    candidature_id INT,
-    statut_candidature_id INT,
-    date_changement DATETIME,
+    candidature_id INT NOT NULL,
+    statut_candidature_id INT NOT NULL,
+    date_changement DATETIME NOT NULL,
     FOREIGN KEY (candidature_id) REFERENCES candidature(id),
     FOREIGN KEY (statut_candidature_id) REFERENCES statut_candidature(id)
-);
-CREATE TABLE statut_entretien(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    libelle VARCHAR(50)
-);
+) ENGINE=InnoDB;
 
-CREATE TABLE entretien(
+-- ------------------------------------------
+-- 5. ENTRETIENS & CONTRATS
+-- ------------------------------------------
+
+CREATE TABLE entretien (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    candidature_id INT,
-    date_entretien DATETIME,
-    lieu VARCHAR(100),
+    candidature_id INT NOT NULL,
+    date_entretien DATETIME NOT NULL,
+    lieu VARCHAR(100) NOT NULL,
     commentaire TEXT,
-    statut_id INT,
+    statut_id INT NOT NULL,
     FOREIGN KEY (statut_id) REFERENCES statut_entretien(id),
     FOREIGN KEY (candidature_id) REFERENCES candidature(id)
-);
+) ENGINE=InnoDB;
 
-
-
-CREATE TABLE contrat(
+CREATE TABLE contrat (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    candidature_id INT UNIQUE,
-    type_contrat VARCHAR(20),
-    date_debut DATE,
+    candidature_id INT NOT NULL UNIQUE,
+    type_contrat ENUM('Essai', 'CDD', 'CDI') NOT NULL,
+    date_debut DATE NOT NULL,
     date_fin DATE NULL,
-    salaire_propose DECIMAL(14,2),
-    salaire_negocie DECIMAL(14,2),
-    heures_travail INT,
-    teletravail TINYINT DEFAULT 0,
-    periode_essai TINYINT DEFAULT 0,
-    heures_sup TINYINT DEFAULT 0,
-    mutuelle TINYINT DEFAULT 0,
-    avantages TEXT,
-    date_creation DATETIME,
-    FOREIGN KEY (candidature_id) REFERENCES candidature(id)
-);
-
-
-ALTER TABLE contrat
-    MODIFY type_contrat ENUM('Essai', 'CDD', 'CDI') NOT NULL;
+    salaire_negocie DECIMAL(14,2) NOT NULL,
+    heure_debut TIME NOT NULL,
+    heure_fin TIME NOT NULL,
+    statut VARCHAR(20) DEFAULT 'Proposé',
+    date_creation DATETIME NOT NULL,
+    date_reponse DATETIME NULL,
+    FOREIGN KEY (candidature_id) REFERENCES candidature(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
