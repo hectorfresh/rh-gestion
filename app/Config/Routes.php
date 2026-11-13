@@ -113,6 +113,7 @@ $routes->get('pointages/equipe', 'Pointage::equipe');
 $routes->post('pointages/calcul', 'Pointage::calculer');
 $routes->post('pointages/entree', 'Pointage::entree');
 $routes->post('pointages/sortie', 'Pointage::sortie');
+$routes->post('pointages/saisir', 'Pointage::saisir');
 $routes->get('pointages', 'Pointage::index');
 $routes->get('pointages/anomalies', 'Pointage::anomalies');
 $routes->post('pointages/anomalies/(:num)/resoudre', 'Pointage::resoudreAnomalie/$1');

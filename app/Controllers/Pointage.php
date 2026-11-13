@@ -105,11 +105,23 @@ class Pointage extends BaseController
 
         $pointages = $builder->orderBy('u.nom')->get()->getResultArray();
 
+        $salaries = [];
+        if ($this->estStaff() || $this->role() === 'manager') {
+            $salaries = db_connect()->table('salarie s')
+                ->select('s.id, s.matricule, u.nom, u.prenom')
+                ->join('utilisateur u', 'u.id = s.utilisateur_id')
+                ->where('s.actif', 1)
+                ->orderBy('u.nom')
+                ->get()->getResultArray();
+        }
+
         return $this->vue('pointages/index', [
             'titre' => 'Pointages',
             'active' => 'pointage',
             'pointages' => $pointages,
             'jour' => $jour,
+            'salaries' => $salaries,
+            'staff' => $this->estStaff() || $this->role() === 'manager',
         ]);
     }
 
@@ -150,6 +162,25 @@ class Pointage extends BaseController
         }
         (new \App\Models\AnomaliePointageModel())->update((int) $id, ['resolue' => 1]);
         return $this->ok('Anomalie marquée comme résolue.', 'pointages/anomalies');
+    }
+
+    public function saisir()
+    {
+        if ($redirection = $this->exigerRoles(['rh', 'dg'])) {
+            return $redirection;
+        }
+
+        $salarieId = (int) $this->request->getPost('salarie_id');
+        $jour = (string) $this->request->getPost('jour');
+        $entree = (string) $this->request->getPost('heure_entree');
+        $sortie = (string) $this->request->getPost('heure_sortie');
+
+        $resultat = (new PointageService())->saisirManuel($salarieId, $jour, $entree, $sortie, (int) $this->utilisateur()['id']);
+        if (! $resultat['ok']) {
+            return $this->erreur($resultat['message'], 'pointages');
+        }
+
+        return $this->ok($resultat['message'], 'pointages?jour=' . $jour);
     }
 
     public function marquerAbsents()

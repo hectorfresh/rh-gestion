@@ -11,6 +11,25 @@
     </div>
 </div>
 
+<?php if ($staff ?? false): ?>
+<div class="app-card">
+    <h4 class="app-card-title"><i class="fa fa-pencil"></i> Saisie / correction manuelle</h4>
+    <form method="post" action="<?= base_url('pointages/saisir') ?>" class="form-inline">
+        <?= csrf_field() ?>
+        <select name="salarie_id" class="form-control input-sm" required>
+            <option value="">— Salarié —</option>
+            <?php foreach ($salaries as $s): ?>
+                <option value="<?= (int) $s['id'] ?>"><?= esc($s['prenom'] . ' ' . $s['nom']) ?> (<?= esc($s['matricule']) ?>)</option>
+            <?php endforeach; ?>
+        </select>
+        <input type="date" name="jour" class="form-control input-sm" value="<?= esc($jour) ?>" required>
+        <input type="time" name="heure_entree" class="form-control input-sm" placeholder="Entrée">
+        <input type="time" name="heure_sortie" class="form-control input-sm" placeholder="Sortie">
+        <button class="btn btn-sm btn-warning"><i class="fa fa-save"></i> Enregistrer</button>
+    </form>
+</div>
+<?php endif; ?>
+
 <div class="app-card">
     <div class="form-inline" style="margin-bottom:15px">
         <form method="get" class="form-inline" style="display:inline-block">

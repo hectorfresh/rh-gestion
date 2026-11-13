@@ -409,6 +409,92 @@ class PointageService
         return ['ok' => true, 'message' => 'Mois consolidé.'];
     }
 
+    public function saisirManuel(int $salarieId, string $jour, ?string $entree, ?string $sortie, int $utilisateurId): array
+    {
+        if (! preg_match('/^\d{4}-\d{2}-\d{2}$/', $jour)) {
+            return ['ok' => false, 'message' => 'Jour invalide.'];
+        }
+
+        $entree = $entree ? trim($entree) : null;
+        $sortie = $sortie ? trim($sortie) : null;
+        if (! $entree && ! $sortie) {
+            return ['ok' => false, 'message' => 'Saisissez au moins une heure.'];
+        }
+
+        $prevu = $this->horairesPrevus($salarieId, $jour);
+        $model = new PointageModel();
+        $pointage = $model->where('salarie_id', $salarieId)->where('jour', $jour)->first();
+
+        $heureEntree = $entree ? $jour . ' ' . (strlen($entree) === 5 ? $entree . ':00' : $entree) : ($pointage['heure_entree'] ?? null);
+        $heureSortie = $sortie ? $jour . ' ' . (strlen($sortie) === 5 ? $sortie . ':00' : $sortie) : ($pointage['heure_sortie'] ?? null);
+
+        if ($heureSortie && ! $heureEntree) {
+            return ['ok' => false, 'message' => 'Une sortie nécessite une entrée.'];
+        }
+
+        $statut = 'present';
+        $minutes = 0;
+        $sup = 0;
+        $retard = false;
+        $anticipe = false;
+
+        if ($heureEntree) {
+            $limite = strtotime($jour . ' ' . $prevu['debut']) + 10 * 60;
+            $retard = strtotime($heureEntree) > $limite;
+            if ($retard) {
+                $statut = 'retard';
+            }
+        }
+
+        if ($heureEntree && $heureSortie) {
+            $minutes = max(0, (int) round((strtotime($heureSortie) - strtotime($heureEntree)) / 60));
+            $finPrevue = strtotime($jour . ' ' . $prevu['fin']);
+            $sup = max(0, (int) round((strtotime($heureSortie) - $finPrevue) / 60));
+            $anticipe = strtotime($heureSortie) < $finPrevue - 10 * 60;
+
+            if ($minutes < 60 || $minutes > 14 * 60) {
+                if ($pointage) {
+                    $this->anomalie((int) $pointage['id'], 'duree_incoherente', 'Durée travaillée incohérente : ' . round($minutes / 60, 2) . ' h.');
+                }
+            }
+        } elseif ($heureEntree && ! $heureSortie) {
+            $statut = $retard ? 'retard' : 'incomplet';
+        }
+
+        $data = [
+            'heure_entree' => $heureEntree,
+            'heure_sortie' => $heureSortie,
+            'minutes_travaillees' => min(65535, $minutes),
+            'minutes_sup' => min(65535, $sup),
+            'statut' => $statut,
+            'commentaire' => 'Saisie manuelle RH/DG.',
+        ];
+
+        if ($pointage) {
+            $model->update((int) $pointage['id'], $data);
+            $id = (int) $pointage['id'];
+        } else {
+            $id = (int) $model->insert(array_merge($data, [
+                'salarie_id' => $salarieId,
+                'jour' => $jour,
+            ]));
+        }
+
+        if ($retard && $id) {
+            $this->anomalie($id, 'retard', 'Entrée à ' . date('H:i', strtotime($heureEntree)) . ', prévue à ' . substr($prevu['debut'], 0, 5) . '.');
+        }
+        if ($anticipe && $id) {
+            $this->anomalie($id, 'sortie_anticipee', 'Sortie à ' . date('H:i', strtotime($heureSortie)) . ', prévue à ' . substr($prevu['fin'], 0, 5) . '.');
+        }
+        if ($sup > 30 && $id) {
+            $this->anomalie($id, 'heures_sup', $sup . ' minute(s) supplémentaire(s).');
+        }
+
+        $this->audit->log($utilisateurId, 'pointage.saisie_manuelle', 'pointage', $id, ['salarie_id' => $salarieId, 'jour' => $jour]);
+
+        return ['ok' => true, 'message' => 'Pointage enregistré manuellement.', 'id' => $id];
+    }
+
     public function compterAnomaliesNonResolues(?int $salarieId = null, string $role = '', ?int $managerId = null): int
     {
         $db = db_connect();
