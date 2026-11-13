@@ -1,252 +1,298 @@
 <?php
+
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
+use App\Models\DemandeCongeModel;
+use App\Models\HistoriqueStatutCongeModel;
+use App\Models\TypeCongeModel;
+use App\Services\CongeService;
 
+/**
+ * Bloc 7 : congés et absences.
+ * Workflow : demande → contrôle du solde → validation manager → validation RH.
+ */
 class Conge extends BaseController
 {
-    private function checkRH()
-    {
-        $user = session()->get('user');
-        if ($user == null) return redirect()->to(base_url('login'));
-
-        $roleModel = new \App\Models\RoleModel();
-        $rh = $roleModel->where('libelle', 'rh')->first()['id'] ?? null;
-        $dg = $roleModel->where('libelle', 'dg')->first()['id'] ?? null;
-
-        if ($user['role_id'] != $rh && $user['role_id'] != $dg) {
-            return redirect()->to(base_url('/'))->with('error', 'Accès refusé.');
-        }
-        return null;
-    }
-
-    /** Côté Employé : Voir ses soldes et son historique */
     public function mes()
     {
-        $user = session()->get('user');
-        if ($user == null) return redirect()->to(base_url('login'));
+        if ($redirection = $this->exigerConnexion()) {
+            return $redirection;
+        }
 
-        $db = \Config\Database::connect();
-        $annee = date('Y');
+        $salarie = $this->salarieCourant();
+        if (! $salarie) {
+            return $this->erreur('Aucune fiche salarié associée à votre compte.', 'dashboard');
+        }
 
-        // 1. Récupérer les soldes
-        $builder = $db->table('solde_conge');
-        $builder->select('solde_conge.*, type_conge.libelle, type_conge.couleur');
-        $builder->join('type_conge', 'solde_conge.type_conge_id = type_conge.id');
-        $builder->where('solde_conge.utilisateur_id', $user['id']);
-        $builder->where('solde_conge.annee', $annee);
-        $data['soldes'] = $builder->get()->getResultArray();
+        $db = db_connect();
+        $demandes = $db->table('demande_conge dc')
+            ->select('dc.*, tc.libelle AS type, tc.couleur, sc.libelle AS statut')
+            ->join('type_conge tc', 'tc.id = dc.type_conge_id')
+            ->join('statut_conge sc', 'sc.id = dc.statut_id')
+            ->where('dc.salarie_id', (int) $salarie['id'])
+            ->orderBy('dc.date_demande', 'DESC')
+            ->get()->getResultArray();
 
-        // 2. Récupérer l'historique des demandes
-        $builder2 = $db->table('demande_conge');
-        $builder2->select('demande_conge.*, type_conge.libelle, type_conge.couleur, statut_conge.libelle AS statut_libelle');
-        $builder2->join('type_conge', 'demande_conge.type_conge_id = type_conge.id');
-        $builder2->join('statut_conge', 'demande_conge.statut_id = statut_conge.id');
-        $builder2->where('demande_conge.utilisateur_id', $user['id']);
-        $builder2->orderBy('demande_conge.date_demande', 'DESC');
-        $data['demandes'] = $builder2->get()->getResultArray();
-
-        $data['annee'] = $annee;
-
-        return view('mes_conges', $data);
+        return $this->vue('conges/mes', [
+            'titre' => 'Mes congés',
+            'active' => 'conges',
+            'salarie' => $salarie,
+            'demandes' => $demandes,
+            'soldes' => (new CongeService())->soldes((int) $salarie['id'], (int) date('Y')),
+        ]);
     }
 
-    /** Formulaire de demande */
-    public function formulaire()
+    public function form()
     {
-        $user = session()->get('user');
-        if ($user == null) return redirect()->to(base_url('login'));
+        if ($redirection = $this->exigerConnexion()) {
+            return $redirection;
+        }
 
-        $db = \Config\Database::connect();
-        $data['types'] = $db->table('type_conge')->get()->getResultArray();
+        $salarie = $this->salarieCourant();
+        if (! $salarie) {
+            return $this->erreur('Aucune fiche salarié.', 'dashboard');
+        }
 
-        return view('form_conge', $data);
+        return $this->vue('conges/form', [
+            'titre' => 'Nouvelle demande de congé',
+            'active' => 'conges',
+            'types' => (new TypeCongeModel())->orderBy('id')->findAll(),
+            'soldes' => (new CongeService())->soldes((int) $salarie['id'], (int) date('Y')),
+        ]);
     }
 
-    /** Enregistrer la demande */
-    public function save()
+    public function store()
     {
-        $user = session()->get('user');
-        if ($user == null) return redirect()->to(base_url('login'));
-
-        $type_id    = (int) $this->request->getPost('type_conge_id');
-        $date_debut = $this->request->getPost('date_debut');
-        $date_fin   = $this->request->getPost('date_fin');
-        $motif      = trim((string) $this->request->getPost('motif'));
-
-        // 1. Validations basiques
-        if ($type_id <= 0 || empty($date_debut) || empty($date_fin)) {
-            return redirect()->back()->withInput()->with('error', 'Tous les champs obligatoires doivent être remplis.');
+        if ($redirection = $this->exigerConnexion()) {
+            return $redirection;
         }
 
-        if (strtotime($date_debut) > strtotime($date_fin)) {
-            return redirect()->back()->withInput()->with('error', 'La date de fin doit être après la date de début.');
+        $salarie = $this->salarieCourant();
+        if (! $salarie) {
+            return $this->erreur('Aucune fiche salarié.', 'dashboard');
         }
 
-        if (strtotime($date_debut) < strtotime(date('Y-m-d'))) {
-            return redirect()->back()->withInput()->with('error', 'On ne peut pas demander un congé dans le passé.');
+        $resultat = (new CongeService())->demander(
+            (int) $salarie['id'],
+            (int) $this->request->getPost('type_conge_id'),
+            (string) $this->request->getPost('date_debut'),
+            (string) $this->request->getPost('date_fin'),
+            (string) $this->request->getPost('motif'),
+            $this->request->getPost('justificatif') ?: null,
+            (int) $this->utilisateur()['id'],
+            (bool) $this->request->getPost('demi_journee')
+        );
+
+        if (! $resultat['ok']) {
+            return $this->erreur($resultat['message'], 'conges/creer');
         }
 
-        // 2. Calcul du nombre de jours (calendaires)
-        $nombre_jours = (strtotime($date_fin) - strtotime($date_debut)) / 86400 + 1;
+        return $this->ok($resultat['message'], 'conges/' . $resultat['id']);
+    }
 
-        $db = \Config\Database::connect();
-
-        // 3. Vérifier le chevauchement
-        $chevauchement = $db->table('demande_conge')
-            ->where('utilisateur_id', $user['id'])
-            ->whereIn('statut_id', [1, 2]) // En attente ou Accepté
-            ->groupStart()
-                ->where('date_debut <=', $date_fin)
-                ->where('date_fin >=', $date_debut)
-            ->groupEnd()
-            ->countAllResults();
-
-        if ($chevauchement > 0) {
-            return redirect()->back()->withInput()->with('error', 'Vous avez déjà un congé sur cette période.');
+    public function show($id)
+    {
+        if ($redirection = $this->exigerConnexion()) {
+            return $redirection;
         }
 
-        // 4. Vérifier le solde
-        $annee = date('Y');
-        $solde = $db->table('solde_conge')
-            ->where('utilisateur_id', $user['id'])
-            ->where('type_conge_id', $type_id)
-            ->where('annee', $annee)
+        $db = db_connect();
+        $demande = $db->table('demande_conge dc')
+            ->select('dc.*, tc.libelle AS type, tc.couleur, tc.justificatif_requis, sc.libelle AS statut,
+                      u.nom, u.prenom, s.matricule, s.manager_id, u.id AS utilisateur_id,
+                      vm.nom AS manager_nom, vm.prenom AS manager_prenom,
+                      vr.nom AS rh_nom, vr.prenom AS rh_prenom')
+            ->join('type_conge tc', 'tc.id = dc.type_conge_id')
+            ->join('statut_conge sc', 'sc.id = dc.statut_id')
+            ->join('salarie s', 's.id = dc.salarie_id')
+            ->join('utilisateur u', 'u.id = s.utilisateur_id')
+            ->join('utilisateur vm', 'vm.id = dc.valide_manager_par', 'left')
+            ->join('utilisateur vr', 'vr.id = dc.traite_par', 'left')
+            ->where('dc.id', (int) $id)
             ->get()->getRowArray();
 
-        if (!$solde) {
-            return redirect()->back()->withInput()->with('error', 'Aucun solde configuré pour ce type de congé.');
+        if (! $demande) {
+            return $this->erreur('Demande introuvable.', 'conges');
         }
 
-        $disponible = $solde['jours_acquis'] - $solde['jours_pris'];
-        if ($nombre_jours > $disponible) {
-            return redirect()->back()->withInput()->with('error', "Solde insuffisant. Vous avez $disponible jours restants.");
+        $monSalarie = $this->salarieCourant();
+        $estProprietaire = (int) $demande['utilisateur_id'] === (int) $this->utilisateur()['id'];
+        $estManager = $this->role() === 'manager' && $monSalarie && (int) $demande['manager_id'] === (int) $monSalarie['id'];
+
+        if (! $estProprietaire && ! $this->estStaff() && ! $estManager) {
+            return $this->erreur('Accès refusé.', 'dashboard');
         }
 
-        // 5. Enregistrer
-        $statutAttente = $db->table('statut_conge')->where('libelle', 'En attente')->get()->getRowArray();
+        $historique = $db->table('historique_statut_conge h')
+            ->select('h.*, sc.libelle, u.nom, u.prenom')
+            ->join('statut_conge sc', 'sc.id = h.statut_id')
+            ->join('utilisateur u', 'u.id = h.utilisateur_id', 'left')
+            ->where('h.demande_conge_id', (int) $id)
+            ->orderBy('h.id', 'ASC')
+            ->get()->getResultArray();
 
-        $db->table('demande_conge')->insert([
-            'utilisateur_id' => $user['id'],
-            'type_conge_id'  => $type_id,
-            'date_debut'     => $date_debut,
-            'date_fin'       => $date_fin,
-            'nombre_jours'   => $nombre_jours,
-            'motif'          => $motif,
-            'statut_id'      => $statutAttente['id'],
-            'date_demande'   => date('Y-m-d H:i:s')
+        return $this->vue('conges/show', [
+            'titre' => 'Demande de congé #' . $id,
+            'active' => 'conges',
+            'demande' => $demande,
+            'historique' => $historique,
+            'est_proprietaire' => $estProprietaire,
+            'peut_manager' => ($estManager || $this->role() === 'dg') && $demande['statut'] === 'En attente',
+            'peut_rh' => $this->estStaff() && $demande['statut'] === 'Validé manager',
+            'peut_refuser' => ($this->estStaff() || $estManager) && in_array($demande['statut'], ['En attente', 'Validé manager'], true),
+            'solde' => (new CongeService())->assurerSolde((int) $demande['salarie_id'], (int) $demande['type_conge_id'], (int) date('Y', strtotime($demande['date_debut']))),
         ]);
-
-        return redirect()->to(base_url('conges/mes'))->with('success', "Demande de $nombre_jours jours envoyée avec succès.");
     }
 
-    /** Annuler une demande en attente */
-    public function annuler($id)
-    {
-        $user = session()->get('user');
-        if ($user == null) return redirect()->to(base_url('login'));
-
-        $db = \Config\Database::connect();
-        $demande = $db->table('demande_conge')->where('id', $id)->where('utilisateur_id', $user['id'])->get()->getRowArray();
-
-        $statutAttente = $db->table('statut_conge')->where('libelle', 'En attente')->get()->getRowArray();
-        $statutAnnule  = $db->table('statut_conge')->where('libelle', 'Annulé')->get()->getRowArray();
-
-        if ($demande && $demande['statut_id'] == $statutAttente['id']) {
-            $db->table('demande_conge')->where('id', $id)->update([
-                'statut_id' => $statutAnnule['id'],
-                'date_traitement' => date('Y-m-d H:i:s')
-            ]);
-            return redirect()->to(base_url('conges/mes'))->with('success', 'Demande annulée.');
-        }
-
-        return redirect()->to(base_url('conges/mes'))->with('error', 'Impossible d\'annuler cette demande.');
-    }
-
-    /** Côté RH : Voir les demandes à valider */
     public function validation()
     {
-        if ($redir = $this->checkRH()) return $redir;
-
-        $db = \Config\Database::connect();
-        $builder = $db->table('demande_conge');
-        $builder->select('demande_conge.*, utilisateur.nom, type_conge.libelle AS type_libelle, statut_conge.libelle AS statut_libelle');
-        $builder->join('utilisateur', 'demande_conge.utilisateur_id = utilisateur.id');
-        $builder->join('type_conge', 'demande_conge.type_conge_id = type_conge.id');
-        $builder->join('statut_conge', 'demande_conge.statut_id = statut_conge.id');
-        $builder->where('statut_conge.libelle', 'En attente');
-        $builder->orderBy('demande_conge.date_demande', 'ASC');
-
-        $data['demandes'] = $builder->get()->getResultArray();
-
-        return view('validation_conges', $data);
-    }
-
-    /** RH : Accepter la demande */
-    public function accepter($id)
-    {
-        if ($redir = $this->checkRH()) return $redir;
-        $user = session()->get('user');
-        $db = \Config\Database::connect();
-
-        $demande = $db->table('demande_conge')->where('id', $id)->get()->getRowArray();
-        if (!$demande) return redirect()->back()->with('error', 'Demande introuvable.');
-
-        $statutAttente = $db->table('statut_conge')->where('libelle', 'En attente')->get()->getRowArray();
-        $statutAccepte = $db->table('statut_conge')->where('libelle', 'Accepté')->get()->getRowArray();
-
-        if ($demande['statut_id'] != $statutAttente['id']) return redirect()->back()->with('error', 'Demande déjà traitée.');
-
-        $db->transBegin();
-        try {
-            // 1. Accepter la demande
-            $db->table('demande_conge')->where('id', $id)->update([
-                'statut_id' => $statutAccepte['id'],
-                'date_traitement' => date('Y-m-d H:i:s'),
-                'traite_par' => $user['id']
-            ]);
-
-            // 2. Déduire du solde
-            $annee = date('Y', strtotime($demande['date_debut']));
-            $solde = $db->table('solde_conge')
-                ->where('utilisateur_id', $demande['utilisateur_id'])
-                ->where('type_conge_id', $demande['type_conge_id'])
-                ->where('annee', $annee)->get()->getRowArray();
-
-            if ($solde) {
-                $db->table('solde_conge')->where('id', $solde['id'])->update([
-                    'jours_pris' => $solde['jours_pris'] + $demande['nombre_jours']
-                ]);
-            }
-
-            $db->transCommit();
-            return redirect()->to(base_url('conges/validation'))->with('success', 'Congé accepté et solde mis à jour.');
-
-        } catch (\Throwable $e) {
-            $db->transRollback();
-            return redirect()->back()->with('error', 'Erreur : ' . $e->getMessage());
+        if ($redirection = $this->exigerRoles(['manager', 'rh', 'dg'])) {
+            return $redirection;
         }
+
+        $db = db_connect();
+        $builder = $db->table('demande_conge dc')
+            ->select('dc.*, tc.libelle AS type, sc.libelle AS statut, u.nom, u.prenom, s.matricule, s.manager_id')
+            ->join('type_conge tc', 'tc.id = dc.type_conge_id')
+            ->join('statut_conge sc', 'sc.id = dc.statut_id')
+            ->join('salarie s', 's.id = dc.salarie_id')
+            ->join('utilisateur u', 'u.id = s.utilisateur_id')
+            ->orderBy('dc.date_demande', 'ASC');
+
+        $monSalarie = $this->salarieCourant();
+        if ($this->role() === 'manager') {
+            $builder->where('s.manager_id', (int) ($monSalarie['id'] ?? 0))->where('sc.libelle', 'En attente');
+        } elseif ($this->role() === 'rh') {
+            $builder->where('sc.libelle', 'Validé manager');
+        } else {
+            $builder->whereIn('sc.libelle', ['En attente', 'Validé manager']);
+        }
+
+        return $this->vue('conges/validation', [
+            'titre' => 'Validation des congés',
+            'active' => 'conges',
+            'demandes' => $builder->get()->getResultArray(),
+        ]);
     }
 
-    /** RH : Refuser la demande */
+    public function validerManager($id)
+    {
+        if ($redirection = $this->exigerConnexion()) {
+            return $redirection;
+        }
+
+        $commentaire = trim((string) $this->request->getPost('commentaire'));
+        $resultat = (new CongeService())->validerManager((int) $id, (int) $this->utilisateur()['id'], $this->role(), $commentaire);
+
+        if (! $resultat['ok']) {
+            return $this->erreur($resultat['message'], 'conges/' . $id);
+        }
+        return $this->ok($resultat['message'], 'conges/' . $id);
+    }
+
+    public function validerRh($id)
+    {
+        if ($redirection = $this->exigerRoles(['rh', 'dg'])) {
+            return $redirection;
+        }
+
+        $commentaire = trim((string) $this->request->getPost('commentaire'));
+        $resultat = (new CongeService())->validerRh((int) $id, (int) $this->utilisateur()['id'], $this->role(), $commentaire);
+
+        if (! $resultat['ok']) {
+            return $this->erreur($resultat['message'], 'conges/' . $id);
+        }
+        return $this->ok($resultat['message'], 'conges/' . $id);
+    }
+
     public function refuser($id)
     {
-        if ($redir = $this->checkRH()) return $redir;
-        $user = session()->get('user');
-        $db = \Config\Database::connect();
+        if ($redirection = $this->exigerRoles(['manager', 'rh', 'dg'])) {
+            return $redirection;
+        }
 
-        $statutAttente = $db->table('statut_conge')->where('libelle', 'En attente')->get()->getRowArray();
-        $statutRefuse  = $db->table('statut_conge')->where('libelle', 'Refusé')->get()->getRowArray();
+        $commentaire = trim((string) $this->request->getPost('commentaire'));
+        $resultat = (new CongeService())->refuser((int) $id, (int) $this->utilisateur()['id'], $this->role(), $commentaire);
 
-        $db->table('demande_conge')
-            ->where('id', $id)
-            ->where('statut_id', $statutAttente['id'])
-            ->update([
-                'statut_id' => $statutRefuse['id'],
-                'date_traitement' => date('Y-m-d H:i:s'),
-                'traite_par' => $user['id']
-            ]);
+        if (! $resultat['ok']) {
+            return $this->erreur($resultat['message'], 'conges/' . $id);
+        }
+        return $this->ok($resultat['message'], 'conges/' . $id);
+    }
 
-        return redirect()->to(base_url('conges/validation'))->with('success', 'Demande refusée.');
+    public function annuler($id)
+    {
+        if ($redirection = $this->exigerConnexion()) {
+            return $redirection;
+        }
+
+        $resultat = (new CongeService())->annuler((int) $id, (int) $this->utilisateur()['id']);
+        if (! $resultat['ok']) {
+            return $this->erreur($resultat['message'], 'conges/' . $id);
+        }
+        return $this->ok($resultat['message'], 'conges/mes');
+    }
+
+    public function calendrier()
+    {
+        if ($redirection = $this->exigerRoles(['manager', 'rh', 'dg'])) {
+            return $redirection;
+        }
+
+        $db = db_connect();
+        $mois = $this->request->getGet('mois') ?: date('Y-m');
+        [$annee, $moisNum] = (new \App\Services\PaieService())->decouperPeriode($mois);
+        $debut = sprintf('%04d-%02d-01', $annee, $moisNum);
+        $fin = date('Y-m-t', strtotime($debut));
+
+        $builder = $db->table('demande_conge dc')
+            ->select('dc.*, tc.libelle AS type, tc.couleur, sc.libelle AS statut, u.nom, u.prenom, s.matricule, s.manager_id')
+            ->join('type_conge tc', 'tc.id = dc.type_conge_id')
+            ->join('statut_conge sc', 'sc.id = dc.statut_id')
+            ->join('salarie s', 's.id = dc.salarie_id')
+            ->join('utilisateur u', 'u.id = s.utilisateur_id')
+            ->where('dc.date_debut <=', $fin)
+            ->where('dc.date_fin >=', $debut)
+            ->orderBy('dc.date_debut', 'ASC');
+
+        $monSalarie = $this->salarieCourant();
+        if ($this->role() === 'manager' && $monSalarie) {
+            $builder->where('s.manager_id', (int) $monSalarie['id']);
+        }
+
+        return $this->vue('conges/calendrier', [
+            'titre' => 'Calendrier d’équipe',
+            'active' => 'conges',
+            'mois' => $mois,
+            'demandes' => $builder->get()->getResultArray(),
+        ]);
+    }
+
+    public function soldes()
+    {
+        if ($redirection = $this->exigerRoles(['rh', 'dg'])) {
+            return $redirection;
+        }
+
+        $db = db_connect();
+        $salaries = $db->table('salarie s')
+            ->select('s.id, s.matricule, u.nom, u.prenom, d.libelle AS departement')
+            ->join('utilisateur u', 'u.id = s.utilisateur_id')
+            ->join('departement d', 'd.id = s.departement_id')
+            ->where('s.actif', 1)
+            ->orderBy('u.nom')
+            ->get()->getResultArray();
+
+        $congeService = new CongeService();
+        foreach ($salaries as &$salarie) {
+            $salarie['soldes'] = $congeService->soldes((int) $salarie['id'], (int) date('Y'));
+        }
+        unset($salarie);
+
+        return $this->vue('conges/soldes', [
+            'titre' => 'Soldes de congés',
+            'active' => 'conges',
+            'salaries' => $salaries,
+        ]);
     }
 }

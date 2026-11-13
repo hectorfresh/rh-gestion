@@ -2,89 +2,120 @@
 
 namespace App\Controllers;
 
-use App\Models\UtilisateurModel;
-use App\Controllers\BaseController;
 use App\Models\RoleModel;
+use App\Models\UtilisateurModel;
+use App\Services\AuditService;
 
+/**
+ * Authentification par session, mots de passe hachés, CSRF activé.
+ */
 class Auth extends BaseController
 {
-    public function index(): string
+    public function loginForm()
     {
-     return view('formulaire_login');
-    }
-    public function creerCompteForm() : string {
-        return view('create_compte');
-    }
-
-    public function login(){
-
-    $model = new UtilisateurModel();
-
-        $email = $this->request->getPost('email');
-        $mdp = $this->request->getPost('mdp');
-
-        $user = $model->where('email', $email)->first();
-
-        
-        if ($user!=null && $user['mdp']==$mdp) {
-            session()->set('user', [
-                'id'=>$user['id'], 
-                'nom'=>$user['nom'], 
-                'email'=>$user['email'], 
-                'role_id'=>$user['role_id'] 
-                ]
-            );
-
-            return redirect()->to('/');
-            
-        } else {
-            return redirect()->to('/login');
+        if ($this->utilisateur()) {
+            return redirect()->to(base_url('dashboard'));
         }
-        
-    }        
-
-
-    public function logout(){
-        session()->destroy();
-        return redirect()->to('/');
+        return view('auth/login');
     }
 
-    public function insertUtilisateur()
+    public function login()
     {
-        $nom      =  $this->request->getPost('nom');
-        $email    =  $this->request->getPost('email');
-        $password =  $this->request->getPost('password');
-        $role_id  = 4;
+        $email = trim((string) $this->request->getPost('email'));
+        $mdp   = (string) $this->request->getPost('mdp');
 
-        if ($nom === '' || $email === '' || $password === '') {
-            return redirect()->to('create_compte');
+        if ($email === '' || $mdp === '') {
+            return redirect()->back()->withInput()->with('error', 'Email et mot de passe obligatoires.');
         }
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return redirect()->back()->withInput()->with('error', 'Email invalide.');
+        $model = new UtilisateurModel();
+        $user  = $model->where('email', $email)->first();
+
+        if (! $user || (int) $user['actif'] !== 1 || ! password_verify($mdp, $user['mdp'])) {
+            return redirect()->back()->withInput()->with('error', 'Identifiants incorrects.');
         }
 
-        $utilisateurModel = new UtilisateurModel();
-        $roleModel        = new RoleModel();
+        $role = (new RoleModel())->find((int) $user['role_id']);
 
-        if (!$roleModel->find($role_id)) {
-            return redirect()->back()->withInput()->with('error', 'Rôle par défaut introuvable.');
-        }
-
-        if ($utilisateurModel->where('email', $email)->first()) {
-            return redirect()->back()->withInput()->with('error', 'Cet email est déjà utilisé.');
-        }
-
-        $utilisateurModel->insert([
-            'nom'     => $nom,
-            'email'   => $email,
-            'mdp'     => $password,
-            'role_id' => $role_id,
+        session()->regenerate();
+        session()->set('user', [
+            'id'      => (int) $user['id'],
+            'nom'     => $user['nom'],
+            'prenom'  => $user['prenom'],
+            'email'     => $user['email'],
+            'telephone' => $user['telephone'] ?? null,
+            'role_id'   => (int) $user['role_id'],
+            'role'      => $role['libelle'] ?? 'candidat',
         ]);
 
-        return redirect()->to(base_url('login'))->with('success', 'Compte créé, vous pouvez vous connecter.');
+        // Permissions chargées une seule fois à la connexion.
+        session()->set('permissions', (new \App\Services\PermissionService())->charger((int) $user['role_id']));
+
+        $model->update((int) $user['id'], ['derniere_connexion' => date('Y-m-d H:i:s')]);
+        (new AuditService())->log((int) $user['id'], 'auth.login', 'utilisateur', (int) $user['id']);
+
+        return redirect()->to(base_url('dashboard'))->with('success', 'Bienvenue ' . $user['prenom'] . ' !');
     }
 
-    
+    public function inscriptionForm()
+    {
+        if ($this->utilisateur()) {
+            return redirect()->to(base_url('dashboard'));
+        }
+        return view('auth/inscription');
+    }
 
+    public function inscription()
+    {
+        $nom      = trim((string) $this->request->getPost('nom'));
+        $prenom   = trim((string) $this->request->getPost('prenom'));
+        $email    = trim((string) $this->request->getPost('email'));
+        $telephone = trim((string) $this->request->getPost('telephone'));
+        $mdp      = (string) $this->request->getPost('mdp');
+        $mdp2     = (string) $this->request->getPost('mdp2');
+
+        if ($nom === '' || $email === '' || $mdp === '') {
+            return redirect()->back()->withInput()->with('error', 'Nom, email et mot de passe sont obligatoires.');
+        }
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return redirect()->back()->withInput()->with('error', 'Adresse email invalide.');
+        }
+        if (strlen($mdp) < 4) {
+            return redirect()->back()->withInput()->with('error', 'Le mot de passe doit contenir au moins 4 caractères.');
+        }
+        if ($mdp !== $mdp2) {
+            return redirect()->back()->withInput()->with('error', 'Les mots de passe ne correspondent pas.');
+        }
+
+        $model = new UtilisateurModel();
+        if ($model->where('email', $email)->first()) {
+            return redirect()->back()->withInput()->with('error', 'Cette adresse email est déjà utilisée.');
+        }
+
+        $roleCandidat = (new RoleModel())->where('libelle', 'candidat')->first();
+
+        $id = $model->insert([
+            'nom'       => $nom,
+            'prenom'    => $prenom,
+            'email'     => $email,
+            'telephone' => $telephone ?: null,
+            'mdp'       => password_hash($mdp, PASSWORD_DEFAULT),
+            'role_id'   => (int) $roleCandidat['id'],
+            'actif'     => 1,
+        ]);
+
+        (new AuditService())->log((int) $id, 'auth.inscription', 'utilisateur', (int) $id);
+
+        return redirect()->to(base_url('login'))->with('success', 'Compte créé. Vous pouvez maintenant vous connecter.');
+    }
+
+    public function logout()
+    {
+        $user = $this->utilisateur();
+        if ($user) {
+            (new AuditService())->log((int) $user['id'], 'auth.logout', 'utilisateur', (int) $user['id']);
+        }
+        session()->destroy();
+        return redirect()->to(base_url('login'))->with('success', 'Vous êtes déconnecté.');
+    }
 }

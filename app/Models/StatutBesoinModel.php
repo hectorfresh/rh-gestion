@@ -1,10 +1,8 @@
 <?php
+
 namespace App\Models;
-use CodeIgniter\Model;
 
-
-class StatutBesoinModel extends Model
+class StatutBesoinModel extends BaseModel
 {
     protected $table = 'statut_besoin';
-    protected $allowedFields = ['id', 'libelle'];
 }

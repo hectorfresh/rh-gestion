@@ -2,240 +2,216 @@
 
 namespace App\Controllers;
 
-use App\Models\UtilisateurModel;
-use App\Models\PosteModel;
-use App\Models\BesoinModel;
-use App\Models\BudgetModel;
-use App\Models\RoleModel;
+use App\Services\BesoinService;
+use App\Services\RecrutementService;
+use App\Services\WorkflowService;
 
-use App\Models\StatutBesoinModel;
-use App\Models\HistoriqueStatutBesoinModel;
-
-use App\Controllers\BaseController;
-
+/**
+ * Bloc 1 : expression du besoin.
+ *
+ * Le manager crée et suit ses besoins ; RH et DG décident.
+ * Le DG hérite de la file RH et tranche en dernier.
+ */
 class Besoin extends BaseController
 {
-    public function form(): string
+    public function index()
     {
-
-        $model = new PosteModel();
-
-        $data['postes'] = $model->findAll();
-
-
-
-        return view('formulaire_besoin', $data);
-    }
-
-    
-    public function insert()
-    {
-        $idPoste = $this->request->getPost('poste');
-        $nombrePoste = $this->request->getPost('nombre');
-        $description = $this->request->getPost('description');
-
-
-        $statutModel = new StatutBesoinModel();
-
-         $onlineUserRole= session()->get('user')['role_id'];
-        
-        $roleModel = new RoleModel();
-        $dg = $roleModel->where('libelle', 'dg')->first()['id'];
-        $rh = $roleModel->where('libelle', 'rh')->first()['id'];
-        $manager = $roleModel->where('libelle', 'manager')->first()['id'];
-
-
-        $db = \Config\Database::connect();
-
-        
-        if ($onlineUserRole==$manager) {
-            $statut = $statutModel->where('libelle', 'Créé')->first();
-            $req = sprintf("INSERT INTO besoin(poste_id, nombre, desce, statut_id, date_creation) VALUES(%d, %d, '%s', %d,  NOW())", 
-            $idPoste, $nombrePoste, $description, $statut['id']);
-
-            $query = $db->query($req);
-            
-            return "Creation de Besoin Reussie Par Manager! ";        
-           
+        if ($redirection = $this->exigerRoles(['manager', 'rh', 'dg'])) {
+            return $redirection;
         }
 
+        $service       = new BesoinService();
+        $statutFiltre  = $this->request->getGet('statut');
+        $demandeurId   = $this->role() === 'manager' ? (int) $this->utilisateur()['id'] : null;
+        $db            = db_connect();
 
-        if ($onlineUserRole==$dg) {
-            $statut = $statutModel->where('libelle', 'Validé Par DG')->first();
-            $req = sprintf("INSERT INTO besoin(poste_id, nombre, desce, statut_id, date_creation) VALUES(%d, %d, '%s', %d,  NOW())", 
-            $idPoste, $nombrePoste, $description, $statut['id']);
+        $idAttenteRh = (int) ($db->table('statut_besoin')->where('libelle', 'En attente RH')->get()->getRowArray()['id'] ?? 0);
+        $idAttenteDg = (int) ($db->table('statut_besoin')->where('libelle', 'En attente DG')->get()->getRowArray()['id'] ?? 0);
 
-            $query = $db->query($req);
-            
-            return "Creation de Besoin Reussie Par DG ! ";        
-           
-        }
-
-
-
+        return $this->vue('besoins/index', [
+            'titre'         => $this->role() === 'manager' ? 'Mes besoins' : 'Besoins de recrutement',
+            'active'        => 'besoins',
+            'besoins'       => $service->lister($demandeurId, $statutFiltre),
+            'statut_filtre' => $statutFiltre,
+            'demandeur_id'  => $demandeurId,
+            'nb_file_rh'    => in_array($this->role(), ['rh', 'dg'], true)
+                ? $db->table('besoin')->where('statut_id', $idAttenteRh)->countAllResults()
+                : 0,
+            'nb_file_dg'    => $this->role() === 'dg'
+                ? $db->table('besoin')->where('statut_id', $idAttenteDg)->countAllResults()
+                : 0,
+        ]);
     }
 
-
-    public function showValidationForm()
+    /** File d'attente RH (accessible aussi au DG, qui hérite du rôle RH). */
+    public function fileRH()
     {
-
-        $model = new BesoinModel();
-
-        $statutModel = new StatutBesoinModel();
-        $posteModel = new PosteModel();
-
-        
-        $db = \Config\Database::connect();
-
-        $onlineUserRole= session()->get('user')['role_id'];
-        
-        $roleModel = new RoleModel();
-        $dg = $roleModel->where('libelle', 'dg')->first()['id'];
-        $rh = $roleModel->where('libelle', 'rh')->first()['id'];
-
-
-        if ($onlineUserRole==$rh) {
-            $statut = $statutModel->where('libelle', 'Créé')->first()['id'];
-            $query = $db->query("SELECT * FROM besoin b JOIN poste ON poste.id = b.poste_id WHERE b.statut_id = "  . $statut);
-            $result = $query->getResultArray();
-            $data['besoins'] = $result;
-            return view("validation_besoin", $data);
+        if ($redirection = $this->exigerRoles(['rh', 'dg'])) {
+            return $redirection;
         }
 
-
-        if ($onlineUserRole==$dg) {
-            $statut = $statutModel->findAll();
-            $idValideDg = $statutModel->where('libelle', 'Validé Par DG')->first()['id'];
-            $idCloture = $statutModel->where('libelle', 'Cloturé')->first()['id'];
-            $query = $db->query("SELECT * FROM besoin b JOIN poste ON poste.id = b.poste_id WHERE b.statut_id !=" . $idValideDg . " AND b.statut_id != " . $idCloture);
-            $result = $query->getResultArray();
-            $data['besoins'] = $result;
-            return view("validation_besoin", $data);
-        }
-        
-
-
-
-
+        return $this->vue('besoins/file_rh', [
+            'titre'  => 'File de validation RH',
+            'active' => 'besoins',
+            'besoins'=> (new BesoinService())->fileRH(),
+        ]);
     }
 
-    public function fiche($id)
+    /** File d'attente DG avec le comparatif RH / finance. */
+    public function fileDG()
     {
-
-        $db = \Config\Database::connect();
-
-        $query = $db->query("SELECT * FROM besoin b JOIN poste ON poste.id = b.poste_id WHERE b.id = "  . $id);
-        $result = $query->getRowArray();
-
-        
-        $data['besoins'] = $result;
-
-
-
-
-        return view('fiche_besoin', $data);
-    }
-
-
-    public function valider($id)
-    {
-        $db = \Config\Database::connect();
-        $besoinModel = new BesoinModel();
-        $posteModel = new PosteModel();
-        $roleModel = new RoleModel();
-        $statutModel = new StatutBesoinModel();
-        $budgetModel = new BudgetModel();
-
-        $onlineUserRole= session()->get('user')['role_id'];
-
-        $besoin = $besoinModel->where('id', $id)->first();
-
-        $idPoste = $besoin['poste_id'];
-        $nombre = $besoin['nombre'];
-        $budget = $budgetModel->first()['valeur'];
-        $poste = $posteModel->where('id', $idPoste)->first();
-        $dg = $roleModel->where('libelle', 'dg')->first()['id'];
-        $rh = $roleModel->where('libelle', 'rh')->first()['id'];
-
-
-        $depensesBesoin = $poste['salaire_max'];
-        $idValideRh = $statutModel->where('libelle', 'Validé Par RH')->first()['id'];
-        $idValideDg = $statutModel->where('libelle', 'Validé Par DG')->first()['id'];
-
-
-
-
-
-        if (($onlineUserRole!=null && $onlineUserRole==$rh ) && $besoin['statut_id']!=$idValideDg){
-
-                if ($depensesBesoin * $nombre < $budget) {
-                        $query = $db->query("UPDATE besoin SET statut_id = ". $idValideRh . " WHERE id = " . $id);
-
-                        $req = sprintf("INSERT INTO historique_statut_besoin(besoin_id, statut_besoin_id, date_changement) 
-                        VALUES (%d, %d, NOW() )", $id, $idValideRh);
-
-                        $db->query($req);
-
-                        return "Besoin Validé Par RH";
-
-
-                }else{
-                    $this->refuser($id);
-                }
-            
+        if ($redirection = $this->exigerRoles(['dg'])) {
+            return $redirection;
         }
 
+        return $this->vue('besoins/file_dg', [
+            'titre'  => 'Décisions finales du DG',
+            'active' => 'besoins',
+            'besoins'=> (new BesoinService())->fileDG(),
+        ]);
+    }
 
-        if ($onlineUserRole!=null && $onlineUserRole==$dg) {
-
-                if ($depensesBesoin * $nombre >= $budget) {
-                    $statutRefuseDg = $statutModel->where('libelle', 'Refusé Par DG')->first();
-                    $query = $db->query("UPDATE besoin SET statut_id = ". $statutRefuseDg['id'] . " WHERE id = " . $id);
-                    $req = sprintf("INSERT INTO historique_statut_besoin(besoin_id, statut_besoin_id, date_changement) 
-                        VALUES (%d, %d, NOW() )", $id, $statutRefuseDg['id']);
-                    $db->query($req);
-                    return "Budget insuffisant : besoin refusé définitivement par DG";
-                }
-
-                $query = $db->query("UPDATE besoin SET statut_id = ". $idValideDg . " WHERE id = " . $id);
-
-                $req = sprintf("INSERT INTO historique_statut_besoin(besoin_id, statut_besoin_id, date_changement) 
-                    VALUES (%d, %d, NOW() )", $id, $idValideDg);
-
-                $db->query($req);
-
-                return "Besoin Validé Par DG";
-
-
+    public function form()
+    {
+        if ($redirection = $this->exigerRoles(['manager', 'dg'])) {
+            return $redirection;
         }
 
+        $perimetre = (new BesoinService())->perimetreCreation($this->utilisateur());
 
+        if ($this->role() === 'manager' && empty($perimetre['departements'])) {
+            return $this->erreur('Aucun département actif n’est associé à votre dossier salarié.', 'dashboard');
+        }
 
-
+        return $this->vue('besoins/form', [
+            'titre'          => 'Nouveau besoin',
+            'active'         => 'besoins',
+            'departements'   => $perimetre['departements'],
+            'postes'         => $perimetre['postes'],
+            'departement_id' => $perimetre['departement_id'],
+        ]);
     }
 
-
-    public function refuser($id)
+    public function store()
     {
-        $db = \Config\Database::connect();
+        if ($redirection = $this->exigerRoles(['manager', 'dg'])) {
+            return $redirection;
+        }
 
-        $statutModel = new StatutBesoinModel();
+        $resultat = (new BesoinService())->creer([
+            'poste_id'       => (int) $this->request->getPost('poste_id'),
+            'departement_id' => (int) $this->request->getPost('departement_id'),
+            'nombre'         => (int) $this->request->getPost('nombre'),
+            'type_besoin'    => $this->request->getPost('type_besoin'),
+            'motif'          => $this->request->getPost('motif'),
+            'description'    => $this->request->getPost('description'),
+            'salaire_estime' => $this->request->getPost('salaire_estime'),
+            'date_souhaitee' => $this->request->getPost('date_souhaitee'),
+        ], $this->utilisateur());
 
-        $statut = $statutModel->where('libelle', 'Refusé')->first();
+        if (! $resultat['ok']) {
+            return $this->erreur($resultat['message'], 'besoins/creer');
+        }
 
-        $query = $db->query("UPDATE besoin SET statut_id = ". $statut['id'] . " WHERE id = " . $id);
-
-        $req = sprintf("INSERT INTO historique_statut_besoin(besoin_id, statut_besoin_id, date_changement) 
-        VALUES (%d, %d, NOW() )", $id, $statut['id']);
-
-        $db->query($req);
-
-        return "Besoin Refusé";
-
+        return $this->ok($resultat['message'], 'besoins/' . $resultat['id']);
     }
 
+    public function show($id)
+    {
+        if ($redirection = $this->exigerRoles(['manager', 'rh', 'dg'])) {
+            return $redirection;
+        }
 
+        $service = new BesoinService();
+        $besoin  = $service->detail((int) $id);
 
+        if (! $besoin) {
+            return $this->erreur('Besoin introuvable.', 'besoins');
+        }
 
+        if ($this->role() === 'manager' && (int) $besoin['demandeur_id'] !== (int) $this->utilisateur()['id']) {
+            return $this->erreur('Vous ne pouvez consulter que vos propres besoins.', 'besoins');
+        }
 
+        $workflow    = new WorkflowService();
+        $utilisateur = $this->utilisateur();
+        $db          = db_connect();
+        $annonces    = $db->table('annonce')
+            ->where('besoin_id', (int) $id)
+            ->orderBy('id', 'DESC')
+            ->get()->getResultArray();
+
+        return $this->vue('besoins/show', [
+            'titre'             => 'Besoin #' . $id,
+            'active'            => 'besoins',
+            'besoin'            => $besoin,
+            'decisions'         => $besoin['decisions'],
+            'finance'           => $besoin['finance'],
+            'historique'        => $db->table('historique_statut_besoin h')
+                ->select('h.*, sb.libelle, u.nom AS utilisateur_nom, u.prenom AS utilisateur_prenom')
+                ->join('statut_besoin sb', 'sb.id = h.statut_id')
+                ->join('utilisateur u', 'u.id = h.utilisateur_id', 'left')
+                ->where('h.besoin_id', (int) $id)
+                ->orderBy('h.id', 'ASC')
+                ->get()->getResultArray(),
+            'annonces'          => $annonces,
+            'embauches'         => $db->table('candidature ca')
+                ->join('annonce a', 'a.id = ca.annonce_id')
+                ->join('statut_candidature sc', 'sc.id = ca.statut_id')
+                ->where('a.besoin_id', (int) $id)
+                ->whereIn('sc.libelle', ['Retenue', 'Embauchée'])
+                ->countAllResults(),
+            'peut_rh'           => $this->role() === 'rh'
+                && $workflow->peutDecider((int) $id, 'rh', (int) $utilisateur['id']),
+            'peut_dg'           => $this->role() === 'dg'
+                && $workflow->peutDecider((int) $id, 'dg', (int) $utilisateur['id']),
+            'peut_creer_annonce'=> $besoin['statut'] === 'Validé'
+                && in_array($this->role(), ['rh', 'dg'], true)
+                && empty($annonces),
+        ]);
+    }
+
+    public function decider($id)
+    {
+        if ($redirection = $this->exigerRoles(['rh', 'dg'])) {
+            return $redirection;
+        }
+
+        $decision    = (string) $this->request->getPost('decision');
+        $commentaire = trim((string) $this->request->getPost('commentaire'));
+
+        $resultat = (new WorkflowService())->deciderBesoin(
+            (int) $id,
+            (int) $this->utilisateur()['id'],
+            $this->role(),
+            $decision,
+            $commentaire
+        );
+
+        if (! $resultat['ok']) {
+            return $this->erreur($resultat['message'], 'besoins/' . $id);
+        }
+
+        return $this->ok($resultat['message'], 'besoins/' . $id);
+    }
+
+    public function creerAnnonce($id)
+    {
+        if ($redirection = $this->exigerRoles(['rh', 'dg'])) {
+            return $redirection;
+        }
+
+        $resultat = (new RecrutementService())->creerAnnonce((int) $id, [
+            'titre'       => $this->request->getPost('titre'),
+            'description' => $this->request->getPost('description'),
+            'profil'      => $this->request->getPost('profil'),
+            'date_limite' => $this->request->getPost('date_limite'),
+        ], $this->utilisateur());
+
+        if (! $resultat['ok']) {
+            return $this->erreur($resultat['message'], 'besoins/' . $id);
+        }
+
+        return $this->ok($resultat['message'], 'annonces/' . $resultat['id']);
+    }
 }

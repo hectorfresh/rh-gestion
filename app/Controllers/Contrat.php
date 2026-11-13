@@ -2,341 +2,330 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
+use App\Models\ContratModel;
+use App\Models\SalarieModel;
+use App\Services\AuditService;
+use App\Services\ContratService;
+use App\Services\OnboardingService;
 
+/**
+ * Bloc 4 : contrats successifs, renouvellement et onboarding.
+ */
 class Contrat extends BaseController
 {
-    private function checkAccessRH()
-    {
-        $user = session()->get('user');
-        if ($user == null) return redirect()->to(base_url('login'));
-
-        $roleModel = new \App\Models\RoleModel();
-        $rh = $roleModel->where('libelle', 'rh')->first()['id'] ?? null;
-        $dg = $roleModel->where('libelle', 'dg')->first()['id'] ?? null;
-
-        if ($user['role_id'] != $rh && $user['role_id'] != $dg) {
-            return redirect()->to(base_url('/'))->with('error', 'Accès refusé.');
-        }
-        return null;
-    }
-
-    private function isStaff()
-    {
-        $user = session()->get('user');
-        $roleModel = new \App\Models\RoleModel();
-        $rh = $roleModel->where('libelle', 'rh')->first()['id'] ?? null;
-        $dg = $roleModel->where('libelle', 'dg')->first()['id'] ?? null;
-        return ($user['role_id'] == $rh || $user['role_id'] == $dg);
-    }
-
-    /** Liste RH/DG : candidats embauchés + état du contrat */
     public function index()
     {
-        if ($redir = $this->checkAccessRH()) return $redir;
-
-        $db = \Config\Database::connect();
-        $builder = $db->table('candidature');
-        $builder->select('candidature.id,
-                          utilisateur.nom,
-                          utilisateur.email,
-                          poste.libelle AS poste,
-                          poste.salaire_base,
-                          poste.salaire_max,
-                          contrat.id AS contrat_id,
-                          contrat.statut AS contrat_statut,
-                          contrat.salaire_negocie,
-                          contrat.type_contrat,
-                          contrat.date_debut,
-                          contrat.date_fin,
-                          contrat.heure_debut,
-                          contrat.heure_fin');
-        $builder->join('cv', 'candidature.cv_id = cv.id');
-        $builder->join('utilisateur', 'cv.utilisateur_id = utilisateur.id');
-        $builder->join('annonce', 'candidature.annonce_id = annonce.id');
-        $builder->join('besoin', 'annonce.besoin_id = besoin.id');
-        $builder->join('poste', 'besoin.poste_id = poste.id');
-        $builder->join('statut_candidature', 'candidature.statut_id = statut_candidature.id');
-        $builder->join('contrat', 'contrat.candidature_id = candidature.id', 'left');
-        $builder->where('statut_candidature.libelle', 'Embauché');
-        $builder->orderBy('candidature.id', 'DESC');
-
-        $data['candidatures'] = $builder->get()->getResultArray();
-
-        return view('contrats', $data);
-    }
-
-    /** Formulaire de proposition de contrat (RH/DG) */
-    public function formulaire($candidature_id)
-    {
-        if ($redir = $this->checkAccessRH()) return $redir;
-
-        $db = \Config\Database::connect();
-
-        $builder = $db->table('candidature');
-        $builder->select('candidature.id,
-                          utilisateur.nom,
-                          utilisateur.email,
-                          poste.libelle AS poste,
-                          poste.salaire_base,
-                          poste.salaire_max');
-        $builder->join('cv', 'candidature.cv_id = cv.id');
-        $builder->join('utilisateur', 'cv.utilisateur_id = utilisateur.id');
-        $builder->join('annonce', 'candidature.annonce_id = annonce.id');
-        $builder->join('besoin', 'annonce.besoin_id = besoin.id');
-        $builder->join('poste', 'besoin.poste_id = poste.id');
-        $builder->where('candidature.id', (int) $candidature_id);
-
-        $data['candidature'] = $builder->get()->getRowArray();
-        if (!$data['candidature']) {
-            return redirect()->to(base_url('contrats'))->with('error', 'Candidature introuvable.');
+        if ($redirection = $this->exigerRoles(['rh', 'dg', 'manager'])) {
+            return $redirection;
         }
 
-        $data['contrat'] = $db->table('contrat')
-                               ->where('candidature_id', (int) $candidature_id)
-                               ->get()->getRowArray();
+        $db = db_connect();
+        $builder = $db->table('contrat c')
+            ->select('c.*, u.nom, u.prenom, u.email, p.libelle AS poste, d.libelle AS departement, s.matricule')
+            ->join('salarie s', 's.id = c.salarie_id', 'left')
+            ->join('utilisateur u', 'u.id = s.utilisateur_id', 'left')
+            ->join('poste p', 'p.id = s.poste_id', 'left')
+            ->join('departement d', 'd.id = s.departement_id', 'left')
+            ->orderBy('c.date_creation', 'DESC');
 
-        return view('form_contrat', $data);
-    }
-
-    /** Enregistrer / modifier la proposition de contrat */
-    public function save($candidature_id)
-    {
-        if ($redir = $this->checkAccessRH()) return $redir;
-
-        $candidature_id = (int) $candidature_id;
-
-        $type_contrat    = trim((string) $this->request->getPost('type_contrat'));
-        $date_debut      = $this->request->getPost('date_debut');
-        $date_fin        = $this->request->getPost('date_fin') ?: null;
-        $salaire_negocie = (float) $this->request->getPost('salaire_negocie');
-        $heure_debut     = $this->request->getPost('heure_debut');
-        $heure_fin       = $this->request->getPost('heure_fin');
-
-        // Validations
-        if ($type_contrat === '' || $date_debut === '' || $salaire_negocie <= 0
-            || $heure_debut === '' || $heure_fin === '') {
-            return redirect()->back()->withInput()->with('error',
-                'Tous les champs sont obligatoires.');
-        }
-
-        if (!in_array($type_contrat, ['Essai', 'CDD', 'CDI'], true)) {
-            return redirect()->back()->withInput()->with('error', 'Type de contrat invalide.');
-        }
-
-        if (in_array($type_contrat, ['Essai', 'CDD'], true) && empty($date_fin)) {
-            return redirect()->back()->withInput()->with('error',
-                'La date de fin est obligatoire pour un contrat d\'essai ou un CDD.');
-        }
-
-        if ($type_contrat === 'CDI') {
-            $date_fin = null;
-        }
-
-        if (!empty($date_fin) && strtotime($date_fin) <= strtotime($date_debut)) {
-            return redirect()->back()->withInput()->with('error',
-                'La date de fin doit être postérieure à la date de début.');
-        }
-
-        if ($heure_fin <= $heure_debut) {
-            return redirect()->back()->withInput()->with('error',
-                'L\'heure de fin doit être postérieure à l\'heure de début.');
-        }
-
-        // Contrainte budget
-        $db = \Config\Database::connect();
-        $builder = $db->table('candidature');
-        $builder->select('poste.salaire_base, poste.salaire_max');
-        $builder->join('annonce', 'candidature.annonce_id = annonce.id');
-        $builder->join('besoin', 'annonce.besoin_id = besoin.id');
-        $builder->join('poste', 'besoin.poste_id = poste.id');
-        $builder->where('candidature.id', $candidature_id);
-        $info = $builder->get()->getRowArray();
-
-        if (!$info) {
-            return redirect()->back()->with('error', 'Candidature introuvable.');
-        }
-
-        if ($salaire_negocie > (float) $info['salaire_max']) {
-            return redirect()->back()->withInput()->with('error',
-                'Le salaire proposé (' . number_format($salaire_negocie, 2)
-                . ') dépasse le plafond autorisé pour ce poste ('
-                . number_format($info['salaire_max'], 2) . ').');
-        }
-        if ($salaire_negocie < (float) $info['salaire_base'] * 0.5) {
-            return redirect()->back()->withInput()->with('error',
-                'Le salaire proposé est trop bas par rapport au salaire de base ('
-                . number_format($info['salaire_base'], 2) . ').');
-        }
-
-        $data = [
-            'candidature_id'  => $candidature_id,
-            'type_contrat'    => $type_contrat,
-            'date_debut'      => $date_debut,
-            'date_fin'        => $date_fin,
-            'salaire_negocie' => $salaire_negocie,
-            'heure_debut'     => $heure_debut,
-            'heure_fin'       => $heure_fin,
-            'statut'          => 'Proposé',     // reset à chaque modification
-            'date_creation'   => date('Y-m-d H:i:s'),
-            'date_reponse'    => null,
-        ];
-
-        $existing = $db->table('contrat')->where('candidature_id', $candidature_id)->get()->getRowArray();
-
-        if ($existing) {
-            $db->table('contrat')->where('id', $existing['id'])->update($data);
-        } else {
-            $db->table('contrat')->insert($data);
-        }
-
-        return redirect()->to(base_url('contrats'))->with('success',
-            'Proposition de contrat envoyée au candidat. En attente de sa réponse.');
-    }
-
-    /** Liste candidat : ses contrats proposés / acceptés */
-    public function mesContrats()
-    {
-        $user = session()->get('user');
-        if ($user == null) return redirect()->to(base_url('login'));
-
-        $db = \Config\Database::connect();
-
-        $builder = $db->table('contrat');
-        $builder->select('contrat.*,
-                          poste.libelle AS poste,
-                          poste.salaire_base,
-                          poste.salaire_max');
-        $builder->join('candidature', 'contrat.candidature_id = candidature.id');
-        $builder->join('cv', 'candidature.cv_id = cv.id');
-        $builder->join('annonce', 'candidature.annonce_id = annonce.id');
-        $builder->join('besoin', 'annonce.besoin_id = besoin.id');
-        $builder->join('poste', 'besoin.poste_id = poste.id');
-        $builder->where('cv.utilisateur_id', $user['id']);
-        $builder->orderBy('contrat.date_creation', 'DESC');
-
-        $data['contrats'] = $builder->get()->getResultArray();
-
-        return view('mes_contrats', $data);
-    }
-public function accepter($id)
-{
-    $user = session()->get('user');
-    if ($user == null) return redirect()->to(base_url('login'));
-
-    $db = \Config\Database::connect();
-    $contrat = $this->getContratForCandidate($id);
-
-    if (!$contrat) {
-        return redirect()->to(base_url('contrats/mes'))->with('error', 'Contrat introuvable.');
-    }
-    if ($contrat['statut'] !== 'Proposé') {
-        return redirect()->to(base_url('contrats/mes'))->with('error', 'Ce contrat ne peut plus être accepté.');
-    }
-
-    $db->transBegin();
-    try {
-        // 1. Accepter le contrat
-        $db->table('contrat')
-           ->where('id', (int) $id)
-           ->update([
-               'statut'       => 'Accepté',
-               'date_reponse' => date('Y-m-d H:i:s'),
-           ]);
-
-        // 2. Fermer TOUTES les annonces du même besoin
-        $candidature = $db->table('candidature')
-                          ->where('id', $contrat['candidature_id'])
-                          ->get()->getRowArray();
-
-        if ($candidature) {
-            $annonce = $db->table('annonce')
-                          ->where('id', $candidature['annonce_id'])
-                          ->get()->getRowArray();
-
-            if ($annonce) {
-                $db->table('annonce')
-                   ->where('besoin_id', $annonce['besoin_id'])
-                   ->update(['estCloture' => 1]);
+        if ($this->role() === 'manager') {
+            $monSalarie = $this->salarieCourant();
+            if ($monSalarie) {
+                $builder->where('s.manager_id', (int) $monSalarie['id']);
             }
         }
 
-        $db->transCommit();
+        $contrats = $builder->get()->getResultArray();
 
-    } catch (\Throwable $e) {
-        $db->transRollback();
-        log_message('error', 'Erreur accepter contrat : ' . $e->getMessage());
-        return redirect()->to(base_url('contrats/mes'))->with('error', 'Erreur lors de l\'acceptation.');
+        return $this->vue('contrats/index', [
+            'titre' => 'Contrats',
+            'active' => 'contrats',
+            'contrats' => $contrats,
+        ]);
     }
 
-    return redirect()->to(base_url('contrats/mes'))->with('success',
-        'Félicitations ! Vous avez accepté le contrat. Vous pouvez maintenant télécharger le PDF.');
-}
-    private function getContratForCandidate($contrat_id)
+    public function mes()
     {
-        $user = session()->get('user');
-        $db = \Config\Database::connect();
-
-        $builder = $db->table('contrat');
-        $builder->select('contrat.*, cv.utilisateur_id AS owner_id');
-        $builder->join('candidature', 'contrat.candidature_id = candidature.id');
-        $builder->join('cv', 'candidature.cv_id = cv.id');
-        $builder->where('contrat.id', (int) $contrat_id);
-        $contrat = $builder->get()->getRowArray();
-
-        if (!$contrat || $contrat['owner_id'] != $user['id']) {
-            return null;
+        if ($redirection = $this->exigerConnexion()) {
+            return $redirection;
         }
-        return $contrat;
+
+        $db = db_connect();
+        $contrats = $db->table('contrat c')
+            ->select('c.*, p.libelle AS poste, d.libelle AS departement, s.id AS salarie_id, s.matricule')
+            ->join('salarie s', 's.id = c.salarie_id')
+            ->join('utilisateur u', 'u.id = s.utilisateur_id')
+            ->join('poste p', 'p.id = s.poste_id')
+            ->join('departement d', 'd.id = s.departement_id')
+            ->where('u.id', (int) $this->utilisateur()['id'])
+            ->orderBy('c.date_debut', 'DESC')
+            ->get()->getResultArray();
+
+        return $this->vue('contrats/mes', [
+            'titre' => 'Mes contrats',
+            'active' => 'contrats',
+            'contrats' => $contrats,
+        ]);
     }
 
-    /** Téléchargement PDF — uniquement si le contrat est ACCEPTÉ */
-    public function pdf($contrat_id)
+    public function show($id)
     {
-        $user = session()->get('user');
-        if ($user == null) return redirect()->to(base_url('login'));
-
-        $db = \Config\Database::connect();
-        $builder = $db->table('contrat');
-        $builder->select('contrat.*,
-                          utilisateur.id AS user_id,
-                          utilisateur.nom,
-                          utilisateur.email,
-                          poste.libelle AS poste,
-                          poste.salaire_base,
-                          poste.salaire_max,
-                          candidature.date_candidature');
-        $builder->join('candidature', 'contrat.candidature_id = candidature.id');
-        $builder->join('cv', 'candidature.cv_id = cv.id');
-        $builder->join('utilisateur', 'cv.utilisateur_id = utilisateur.id');
-        $builder->join('annonce', 'candidature.annonce_id = annonce.id');
-        $builder->join('besoin', 'annonce.besoin_id = besoin.id');
-        $builder->join('poste', 'besoin.poste_id = poste.id');
-        $builder->where('contrat.id', (int) $contrat_id);
-        $data['contrat'] = $builder->get()->getRowArray();
-
-        if (!$data['contrat']) {
-            return redirect()->to(base_url('/'))->with('error', 'Contrat introuvable.');
+        $contrat = $this->chargeContrat((int) $id);
+        if (! $contrat) {
+            return $this->erreur('Contrat introuvable.', 'dashboard');
         }
-        if ($data['contrat']['statut'] !== 'Accepté') {
-            return redirect()->to(base_url('/'))->with('error',
-                'Le contrat n\'a pas encore été accepté par le candidat.');
+        if (! $this->estProprietaireOuStaff($contrat)) {
+            return $this->erreur('Accès refusé.', 'dashboard');
         }
 
-        // Sécurité : RH/DG ou propriétaire du contrat
-        $isStaff = $this->isStaff();
-        $isOwner = ($user['id'] == $data['contrat']['user_id']);
-        if (!$isStaff && !$isOwner) {
-            return redirect()->to(base_url('/'))->with('error', 'Accès refusé.');
+        return $this->vue('contrats/show', [
+            'titre' => 'Contrat #' . $id,
+            'active' => 'contrats',
+            'contrat' => $contrat,
+            'staff' => $this->estStaff() || $this->role() === 'manager',
+            'peut_rompre' => $this->estStaff(),
+            'est_proprietaire' => (int) $contrat['utilisateur_id'] === (int) $this->utilisateur()['id'],
+        ]);
+    }
+
+    public function pdf($id)
+    {
+        $contrat = $this->chargeContrat((int) $id);
+        if (! $contrat || ! $this->estProprietaireOuStaff($contrat)) {
+            return $this->erreur('Contrat introuvable ou accès refusé.', 'dashboard');
         }
 
-        $html = view('contrat_pdf', $data);
+        $service = new ContratService();
+        $pdf = $service->genererPdf((int) $id, true, (int) $this->utilisateur()['id']);
 
-        $dompdf = new \Dompdf\Dompdf();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-        $dompdf->stream('contrat_' . $contrat_id . '.pdf', ['Attachment' => true]);
+        $fichier = WRITEPATH . 'uploads/documents/contrat_' . (int) $id . '.pdf';
+        if (is_file($fichier)) {
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: attachment; filename="contrat_' . (int) $id . '.pdf"');
+            header('Content-Length: ' . filesize($fichier));
+            readfile($fichier);
+            exit;
+        }
+
+        if (! $pdf) {
+            helper('talentflow');
+            return $this->vue('contrats/pdf', ['contrat' => $this->chargeContrat((int) $id)]);
+        }
+
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="contrat_' . (int) $id . '.pdf"');
+        header('Content-Length: ' . filesize($fichier));
+        readfile($fichier);
         exit;
+    }
+
+    public function rompre($id)
+    {
+        if ($redirection = $this->exigerRoles(['rh', 'dg'])) {
+            return $redirection;
+        }
+        $contrat = (new ContratModel())->find((int) $id);
+        if (! $contrat) {
+            return $this->erreur('Contrat introuvable.', 'contrats');
+        }
+
+        (new ContratModel())->update((int) $id, ['statut' => 'Rompu', 'date_fin' => date('Y-m-d')]);
+        (new AuditService())->log((int) $this->utilisateur()['id'], 'contrat.rompre', 'contrat', (int) $id);
+
+        return $this->ok('Contrat marqué comme rompu.', 'contrats');
+    }
+
+    public function salarie($id)
+    {
+        if ($redirection = $this->exigerRoles(['rh', 'dg', 'manager'])) {
+            return $redirection;
+        }
+
+        $salarie = $this->chargeSalarie((int) $id);
+        if (! $salarie) {
+            return $this->erreur('Salarié introuvable.', 'salaries');
+        }
+
+        $service = new ContratService();
+        $contrats = $service->frise((int) $id);
+        $progression = (new OnboardingService())->progression((int) $id);
+
+        return $this->vue('contrats/salarie', [
+            'titre' => 'Contrats — ' . $salarie['prenom'] . ' ' . $salarie['nom'],
+            'active' => 'contrats',
+            'salarie' => $salarie,
+            'contrats' => $contrats,
+            'progression' => $progression,
+        ]);
+    }
+
+    public function renouveler($id)
+    {
+        if ($redirection = $this->exigerRoles(['rh', 'dg'])) {
+            return $redirection;
+        }
+
+        $ancien = (new ContratModel())->find((int) $id);
+        if (! $ancien) {
+            return $this->erreur('Contrat introuvable.', 'contrats');
+        }
+
+        $salarie = (new SalarieModel())->find((int) $ancien['salarie_id']);
+        if (! $salarie) {
+            return $this->erreur('Salarié introuvable.', 'contrats');
+        }
+
+        $db = db_connect();
+        $poste = $db->table('poste')->where('id', (int) $salarie['poste_id'])->get()->getRowArray();
+        $regimes = $db->table('regime_travail')->orderBy('libelle')->get()->getResultArray();
+        $postes = $db->table('poste')->where('actif', 1)->orderBy('libelle')->get()->getResultArray();
+
+        if ($this->request->getMethod() === 'post') {
+            $service = new ContratService();
+            $resultat = $service->renouveler((int) $id, [
+                'type_contrat'      => $this->request->getPost('type_contrat'),
+                'date_debut'        => $this->request->getPost('date_debut'),
+                'date_fin'          => $this->request->getPost('date_fin'),
+                'salaire'           => $this->request->getPost('salaire'),
+                'poste_id'          => $this->request->getPost('poste_id'),
+                'departement_id'    => $this->request->getPost('departement_id'),
+                'regime_travail_id' => $this->request->getPost('regime_travail_id'),
+                'heure_debut'       => $this->request->getPost('heure_debut'),
+                'heure_fin'         => $this->request->getPost('heure_fin'),
+                'periode_essai'     => $this->request->getPost('periode_essai'),
+            ], $this->utilisateur());
+
+            if (! $resultat['ok']) {
+                return $this->erreur($resultat['message'], 'contrats/' . $id . '/renouveler');
+            }
+
+            return $this->ok($resultat['message'], 'contrats/' . $resultat['id']);
+        }
+
+        return $this->vue('contrats/renouveler', [
+            'titre' => 'Renouveler le contrat #' . $id,
+            'active' => 'contrats',
+            'ancien' => $ancien,
+            'salarie' => $salarie,
+            'poste' => $poste,
+            'regimes' => $regimes,
+            'postes' => $postes,
+            'departements' => $db->table('departement')->where('actif', 1)->orderBy('libelle')->get()->getResultArray(),
+        ]);
+    }
+
+    public function echeance()
+    {
+        if ($redirection = $this->exigerRoles(['rh', 'dg'])) {
+            return $redirection;
+        }
+
+        $service = new ContratService();
+        $contrats = $service->echeances(30);
+
+        return $this->vue('contrats/echeance', [
+            'titre' => 'Contrats à échéance sous 30 jours',
+            'active' => 'contrats',
+            'contrats' => $contrats,
+        ]);
+    }
+
+    public function onboarding($id)
+    {
+        if ($redirection = $this->exigerConnexion()) {
+            return $redirection;
+        }
+
+        $salarie = $this->chargeSalarie((int) $id);
+        if (! $salarie) {
+            return $this->erreur('Salarié introuvable.', 'salaries');
+        }
+
+        if (! $this->estStaff() && (int) $salarie['utilisateur_id'] !== (int) $this->utilisateur()['id']) {
+            return $this->erreur('Accès refusé.', 'dashboard');
+        }
+
+        (new OnboardingService())->notifierRetards();
+
+        $progression = (new OnboardingService())->progression((int) $id);
+
+        return $this->vue('contrats/onboarding', [
+            'titre' => 'Onboarding — ' . $salarie['prenom'] . ' ' . $salarie['nom'],
+            'active' => 'contrats',
+            'salarie' => $salarie,
+            'progression' => $progression,
+            'types' => (new \App\Models\TypeDocumentModel())->where('actif', 1)->orderBy('libelle')->findAll(),
+        ]);
+    }
+
+    public function onboardingTache($id)
+    {
+        if ($redirection = $this->exigerConnexion()) {
+            return $redirection;
+        }
+
+        $tache = (new \App\Models\OnboardingTacheModel())->find((int) $id);
+        if (! $tache) {
+            return $this->erreur('Tâche introuvable.', 'dashboard');
+        }
+
+        $onboarding = (new \App\Models\OnboardingModel())->find((int) $tache['onboarding_id']);
+        if (! $onboarding) {
+            return $this->erreur('Onboarding introuvable.', 'dashboard');
+        }
+
+        $salarie = (new SalarieModel())->find((int) $onboarding['salarie_id']);
+        if (! $salarie) {
+            return $this->erreur('Salarié introuvable.', 'dashboard');
+        }
+
+        if (! $this->estStaff() && (int) $salarie['utilisateur_id'] !== (int) $this->utilisateur()['id']) {
+            return $this->erreur('Accès refusé.', 'dashboard');
+        }
+
+        $statut = (string) $this->request->getPost('statut');
+        $resultat = (new OnboardingService())->mettreAJourTache((int) $id, $statut, (int) $this->utilisateur()['id']);
+        if (! $resultat['ok']) {
+            return $this->erreur($resultat['message'], 'contrats/onboarding/' . $salarie['id']);
+        }
+
+        return $this->ok($resultat['message'], 'contrats/onboarding/' . $salarie['id']);
+    }
+
+    private function chargeContrat(int $id): ?array
+    {
+        $service = new ContratService();
+
+        return $service->charger($id);
+    }
+
+    private function chargeSalarie(int $id): ?array
+    {
+        $db = db_connect();
+        return $db->table('salarie s')
+            ->select('s.*, u.nom, u.prenom, u.email, u.telephone, d.libelle AS departement,
+                      p.libelle AS poste, p.salaire_base, p.salaire_max, r.libelle AS regime')
+            ->join('utilisateur u', 'u.id = s.utilisateur_id')
+            ->join('departement d', 'd.id = s.departement_id')
+            ->join('poste p', 'p.id = s.poste_id')
+            ->join('regime_travail r', 'r.id = s.regime_travail_id')
+            ->where('s.id', $id)
+            ->get()->getRowArray();
+    }
+
+    private function estProprietaireOuStaff(array $contrat): bool
+    {
+        if ($this->estStaff()) {
+            return true;
+        }
+        if ((int) $contrat['utilisateur_id'] === (int) $this->utilisateur()['id']) {
+            return true;
+        }
+        if ($this->role() === 'manager') {
+            $monSalarie = $this->salarieCourant();
+            return $monSalarie && (int) $contrat['manager_id'] === (int) $monSalarie['id'];
+        }
+
+        return false;
     }
 }
